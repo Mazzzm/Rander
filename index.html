@@ -181,21 +181,37 @@
         <h2 class="section-title">المنتجات الممتازة</h2>
         <div class="products-grid">
             
-            <!-- كارت المنتج الأول -->
+                   <div class="products-grid">
+            
+            <!-- منتج مع خيارات المقاس/اللون -->
             <div class="product-card">
                 <img src="https://via.placeholder.com/250" alt="منتج" class="product-image">
                 <div class="product-title">كوب قهوة RANDER</div>
                 <div class="product-price">12,000 د.ع</div>
                 
-                <div class="quantity-wrapper">
-                    <label>الكمية:</label>
-                    <input type="number" class="product-qty" value="1" min="1">
+                <!-- خيار المقاس أو اللون -->
+                <div class="option-wrapper" style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                    <label style="font-size: 14px; font-weight: bold;">الحجم:</label>
+                    <select class="product-option" style="padding: 6px; border: 1px solid #ccc; border-radius: 6px; flex: 1;">
+                        <option value="صغير (250ml)">صغير (250ml)</option>
+                        <option value="وسط (350ml)">وسط (350ml)</option>
+                        <option value="كبير (500ml)">كبير (500ml)</option>
+                    </select>
+                </div>
+
+                <!-- حقل الكمية -->
+                <div class="quantity-wrapper" style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <label style="font-size: 14px; font-weight: bold;">الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1" style="width: 60px; padding: 6px; border: 1px solid #ccc; border-radius: 6px; text-align: center;">
                 </div>
 
                 <button class="buy-button" onclick="sendOrder(this, 'كوب قهوة RANDER', 12000)">
                     اطلب عبر واتساب 💬
                 </button>
             </div>
+
+        </div>
+
 
         </div>
     </main>
