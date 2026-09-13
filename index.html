@@ -184,27 +184,48 @@
     </main>
 
     <script>
-        function sendOrder(productName, price) {
-            var phoneNumber = "9647862253180";
-            
-            var customerName = prompt("من فضلك اكتب اسمك الكامل:");
-            var customerAddress = prompt("من فضلك اكتب عنوانك (المحافظة / المنطقة):");
-            
-            if (!customerName || !customerAddress) {
-                alert("يرجى كتابة الاسم والعنوان لإكمال الطلب!");
-                return;
-            }
+        
+    // متغير لحساب إجمالي عدد القطع المطلوبة في السلة
+    var totalCartCount = 0;
 
-            var message = "مرحباً، أريد طلب المنتج التالي:\n" +
-                          "📦 المنتج: " + productName + "\n" +
-                          "💰 السعر: " + price + "\n" +
-                          "👤 اسم الزبون: " + customerName + "\n" +
-                          "📍 العنوان: " + customerAddress;
-
-            var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
-            window.open(url, '_blank');
+    function sendOrder(buttonElement, productName, unitPrice) {
+        var phoneNumber = "9647862253180";
+        
+        // 1. قراءة الكمية المحددة من الحقل المالي القريب من الزر
+        var productCard = buttonElement.closest('.product-card');
+        var qtyInput = productCard.querySelector('.product-qty');
+        var quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+        
+        // 2. حساب السعر الإجمالي للمنتج بناءً على الكمية
+        var totalPrice = unitPrice * quantity;
+        var formattedTotal = totalPrice.toLocaleString('ar-IQ') + " د.ع";
+        
+        // 3. طلب بيانات الزبون
+        var customerName = prompt("من فضلك اكتب اسمك الكامل:");
+        var customerAddress = prompt("من فضلك اكتب عنوانك (المحافظة / المنطقة):");
+        
+        if (!customerName || !customerAddress) {
+            alert("يرجى كتابة الاسم والعنوان لإكمال الطلب!");
+            return;
         }
-    </script>
+
+        // 4. تحديث عداد السلة في أعلى الصفحة
+        totalCartCount += quantity;
+        document.querySelector('.cart').innerText = "🛒 السلة (" + totalCartCount + ")";
+
+        // 5. تجهيز نص الرسالة للواتساب
+        var message = "مرحباً، أريد طلب المنتج التالي:\n" +
+                      "📦 المنتج: " + productName + "\n" +
+                      "🔢 الكمية: " + quantity + "\n" +
+                      "💰 المجموع الكلي: " + formattedTotal + "\n" +
+                      "👤 اسم الزبون: " + customerName + "\n" +
+                      "📍 العنوان: " + customerAddress;
+
+        var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+        window.open(url, '_blank');
+    }
+</script>
+
 
 </body>
 </html>
