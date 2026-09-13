@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta name="theme-color" content="#1d4ed8">
     <meta name="description" content="Rander - متجرك الإلكتروني">
-
     <title>Rander | متجرك الإلكتروني</title>
 
     <style>
@@ -16,22 +14,20 @@
             padding: 0;
         }
 
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
             background: #f5f6f8;
             color: #111827;
         }
-       .announcement-bar {
-    background-color: #1d4ed8;
-    color: #ffffff;
-    text-align: center;
-    padding: 8px 10px;
-    font-size: 14px;
-    font-weight: bold;
-}
 
-
+        .announcement-bar {
+            background-color: #1d4ed8;
+            color: #ffffff;
+            text-align: center;
+            padding: 8px 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
 
         header {
             background: #111827;
@@ -44,7 +40,6 @@
             top: 0;
             z-index: 100;
         }
-
 
         .logo {
             font-size: 25px;
@@ -60,6 +55,7 @@
             padding: 10px 15px;
             font-size: 15px;
             cursor: pointer;
+            font-weight: bold;
         }
 
         .hero {
@@ -89,223 +85,117 @@
             font-size: 25px;
             margin-bottom: 22px;
         }
-    </style>
-</head>
-<body>
 
-    <div class="announcement-bar">
-        🚚 التوصيل مجاني للطلبات فوق 50,000 د.ع!
-    </div>
-
-        .products {
+        .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
         }
 
-        .product {
+        .product-card {
             background: white;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .product-image {
-            height: 180px;
-            background: #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9ca3af;
-            font-size: 14px;
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
         }
 
-        .product-info {
-            padding: 16px;
-        }
-
-        .product-name {
-            font-size: 17px;
-            font-weight: 700;
+        .product-title {
+            font-size: 18px;
+            font-weight: bold;
             margin-bottom: 8px;
         }
 
-        .price {
-            font-size: 18px;
-            font-weight: 800;
+        .product-price {
+            color: #1d4ed8;
+            font-size: 16px;
+            font-weight: bold;
             margin-bottom: 14px;
         }
 
         .buy-button {
-            width: 100%;
-            border: none;
-            background: #25D366; /* لون الواتساب الأخضر */
+            background: #25D366;
             color: white;
+            border: none;
             padding: 12px;
             border-radius: 10px;
-            cursor: pointer;
             font-size: 15px;
             font-weight: bold;
+            cursor: pointer;
+            width: 100%;
         }
 
-        footer {
-            background: #111827;
-            color: #d1d5db;
-            text-align: center;
-            padding: 25px;
-            font-size: 14px;
-        }
-
-        @media (max-width: 500px) {
-            .hero h1 {
-                font-size: 31px;
-            }
-
-            .products {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-
-            .product-image {
-                height: 140px;
-            }
+        .buy-button:hover {
+            background: #1eb954;
         }
     </style>
 </head>
 
 <body>
 
-<header>
-    <div class="logo">RANDER</div>
-
-    <button class="cart">
-        🛒 السلة <span id="cart-count">0</span>
-    </button>
-</header>
-
-<section class="hero">
-    <h1>مرحبًا بك في Rander</h1>
-
-    <p>
-        اكتشف منتجاتنا واختر ما يناسبك
-        <br>
-        تسوق بسهولة من هاتفك
-    </p>
-</section>
-
-<section class="products-section">
-
-    <h2 class="section-title">منتجاتنا</h2>
-
-    <div class="products">
-
-        <!-- المنتج 1 -->
-        <div class="product">
-            <div class="product-image">
-                صورة المنتج
-            </div>
-            <div class="product-info">
-                <div class="product-name">
-                    المنتج الأول
-                </div>
-                <div class="price">
-                    25,000 د.ع
-                </div>
-                <button class="buy-button" onclick="sendOrder('المنتج الأول', '25,000 د.ع')">
-                    اطلب عبر واتساب 💬
-                </button>
-            </div>
-        </div>
-
-        <!-- المنتج 2 -->
-        <div class="product">
-            <div class="product-image">
-                 <img src="3D270FAF-2572-44F4-8147-45CE965BC0A5.jpeg" style="width:100%; height:100%; object-fit:cover;">
-
-            </div>
-            <div class="product-info">
-                <div class="product-name">
-                    المنتج الثاني
-                </div>
-                <div class="price">
-                    30,000 د.ع
-                </div>
-                <button class="buy-button" onclick="sendOrder('المنتج الثاني', '30,000 د.ع')">
-                    اطلب عبر واتساب 💬
-                </button>
-            </div>
-        </div>
-
-        <!-- المنتج 3 -->
-        <div class="product">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500" alt="كوب قهوة" style="width:100%; height:100%; object-fit:cover;">
-            </div>
-            <div class="product-info">
-                <div class="product-name">
-                    كوب قهوة (But First, Coffee ☕)
-                </div>
-                <div class="price">
-                    12,000 د.ع
-                </div>
-                <button class="buy-button" onclick="sendOrder('كوب قهوة', '12,000 د.ع')">
-                    اطلب عبر واتساب 💬
-                </button>
-            </div>
-        </div>
-          <!-- المنتج 4 -->
-        <div class="product">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500" alt="كوب قهوة" style="width:100%; height:100%; object-fit:cover;">
-            </div>
-            <div class="product-info">
-                <div class="product-name">
-                    كوب قهوة (But First, Coffee ☕)
-                </div>
-                <div class="price">
-                    12,000 د.ع
-                </div>
-                <button class="buy-button" onclick="sendOrder('كوب قهوة', '12,000 د.ع')">
-                    اطلب عبر واتساب 💬
-                </button>
-            </div>
-        </div>
-
+    <div class="announcement-bar">
+         التوصيل مجاني للطلبات فوق 50,000 د.ع!
     </div>
 
-</section>
+    <header>
+        <div class="logo">RANDER</div>
+        <button class="cart">🛒 السلة (0)</button>
+    </header>
 
-<footer>
-    © 2026 Rander — جميع الحقوق محفوظة
-</footer>
+    <section class="hero">
+        <h1>أهلاً بك في متجر RANDER</h1>
+        <p>تسوق أفضل المنتجات بأعلى جودة وأفضل الأسعار</p>
+    </section>
 
-<script>
-    function sendOrder(productName, price) {
-    var phoneNumber = "9647862253180";
-    
-    // طلب اسم الزبون وعنوانه
-    var customerName = prompt("من فضلك اكتب اسمك الكامل:");
-    var customerAddress = prompt("من فضلك اكتب عنوانك (المحافظة / المنطقة):");
-    
-    // التأكد من أن الزبون لم يترك البيانات فارغة
-    if (!customerName || !customerAddress) {
-        alert("يرجى كتابة الاسم والعنوان لإكمال الطلب!");
-        return;
-    }
+    <main class="products-section">
+        <h2 class="section-title">المنتجات الممتازة</h2>
+        <div class="products-grid">
+            
+            <!-- منتج تجريبي 1 -->
+            <div class="product-card">
+                <img src="https://via.placeholder.com/250" alt="منتج" class="product-image">
+                <div class="product-title">كوب قهوة RANDER</div>
+                <div class="product-price">12,000 د.ع</div>
+                <button class="buy-button" onclick="sendOrder('كوب قهوة RANDER', '12,000 د.ع')">
+                    اطلب عبر واتساب 💬
+                </button>
+            </div>
 
-    // تجهيز النص النهائي للرسالة
-    var message = "مرحباً، أريد طلب المنتج التالي:\n" +
-                  "📦 المنتج: " + productName + "\n" +
-                  "💰 السعر: " + price + "\n" +
-                  "👤 اسم الزبون: " + customerName + "\n" +
-                  "📍 العنوان: " + customerAddress;
+        </div>
+    </main>
 
-    var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
-    window.open(url, '_blank');
-}
+    <script>
+        function sendOrder(productName, price) {
+            var phoneNumber = "9647862253180";
+            
+            var customerName = prompt("من فضلك اكتب اسمك الكامل:");
+            var customerAddress = prompt("من فضلك اكتب عنوانك (المحافظة / المنطقة):");
+            
+            if (!customerName || !customerAddress) {
+                alert("يرجى كتابة الاسم والعنوان لإكمال الطلب!");
+                return;
+            }
 
+            var message = "مرحباً، أريد طلب المنتج التالي:\n" +
+                          "📦 المنتج: " + productName + "\n" +
+                          "💰 السعر: " + price + "\n" +
+                          "👤 اسم الزبون: " + customerName + "\n" +
+                          "📍 العنوان: " + customerAddress;
 
-</script>
+            var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+            window.open(url, '_blank');
+        }
+    </script>
 
 </body>
 </html>
