@@ -123,6 +123,26 @@
             margin-bottom: 14px;
         }
 
+        .quantity-wrapper {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-wrapper label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .product-qty {
+            width: 60px;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            text-align: center;
+        }
+
         .buy-button {
             background: #25D366;
             color: white;
@@ -161,21 +181,18 @@
         <h2 class="section-title">المنتجات الممتازة</h2>
         <div class="products-grid">
             
-            <!-- منتج تجريبي 1 -->
+            <!-- كارت المنتج الأول -->
             <div class="product-card">
                 <img src="https://via.placeholder.com/250" alt="منتج" class="product-image">
                 <div class="product-title">كوب قهوة RANDER</div>
                 <div class="product-price">12,000 د.ع</div>
-                <button class="buy-button" onclick="sendOrder('كوب قهوة RANDER', '12,000 د.ع')">
-                    اطلب عبر واتساب 💬
-                </button>
-            </div>
-            <!-- منتج تجريبي 2 -->
-            <div class="product-card">
-                <img src="https://via.placeholder.com/250" alt="منتج" class="product-image">
-                <div class="product-title">قلم سحري RANDER</div>
-                <div class="product-price">5,000 د.ع</div>
-                <button class="buy-button" onclick="sendOrder('قلم سحري RANDER', '5,000 د.ع')">
+                
+                <div class="quantity-wrapper">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+
+                <button class="buy-button" onclick="sendOrder(this, 'كوب قهوة RANDER', 12000)">
                     اطلب عبر واتساب 💬
                 </button>
             </div>
@@ -183,48 +200,41 @@
         </div>
     </main>
 
-    <script>      
-    // متغير لحساب إجمالي عدد القطع المطلوبة في السلة
-    var totalCartCount = 0;
+    <script>  
+        var totalCartCount = 0;
 
-    function sendOrder(buttonElement, productName, unitPrice) {
-        var phoneNumber = "9647862253180";
-        
-        // 1. قراءة الكمية المحددة من الحقل المالي القريب من الزر
-        var productCard = buttonElement.closest('.product-card');
-        var qtyInput = productCard.querySelector('.product-qty');
-        var quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
-        
-        // 2. حساب السعر الإجمالي للمنتج بناءً على الكمية
-        var totalPrice = unitPrice * quantity;
-        var formattedTotal = totalPrice.toLocaleString('ar-IQ') + " د.ع";
-        
-        // 3. طلب بيانات الزبون
-        var customerName = prompt("من فضلك اكتب اسمك الكامل:");
-        var customerAddress = prompt("من فضلك اكتب عنوانك (المحافظة / المنطقة):");
-        
-        if (!customerName || !customerAddress) {
-            alert("يرجى كتابة الاسم والعنوان لإكمال الطلب!");
-            return;
+        function sendOrder(buttonElement, productName, unitPrice) {
+            var phoneNumber = "9647862253180";
+            
+            var productCard = buttonElement.closest('.product-card');
+            var qtyInput = productCard.querySelector('.product-qty');
+            var quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+            
+            var totalPrice = unitPrice * quantity;
+            var formattedTotal = totalPrice.toLocaleString('ar-IQ') + " د.ع";
+            
+            var customerName = prompt("من فضلك اكتب اسمك الكامل:");
+            var customerAddress = prompt("من فضلك اكتب عنوانك (المحافظة / المنطقة):");
+            
+            if (!customerName || !customerAddress) {
+                alert("يرجى كتابة الاسم والعنوان لإكمال الطلب!");
+                return;
+            }
+
+            totalCartCount += quantity;
+            document.querySelector('.cart').innerText = "🛒 السلة (" + totalCartCount + ")";
+
+            var message = "مرحباً، أريد طلب المنتج التالي:\n" +
+                          "📦 المنتج: " + productName + "\n" +
+                          "🔢 الكمية: " + quantity + "\n" +
+                          "💰 المجموع الكلي: " + formattedTotal + "\n" +
+                          "👤 اسم الزبون: " + customerName + "\n" +
+                          "📍 العنوان: " + customerAddress;
+
+            var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+            window.open(url, '_blank');
         }
-
-        // 4. تحديث عداد السلة في أعلى الصفحة
-        totalCartCount += quantity;
-        document.querySelector('.cart').innerText = "🛒 السلة (" + totalCartCount + ")";
-
-        // 5. تجهيز نص الرسالة للواتساب
-        var message = "مرحباً، أريد طلب المنتج التالي:\n" +
-                      "📦 المنتج: " + productName + "\n" +
-                      "🔢 الكمية: " + quantity + "\n" +
-                      "💰 المجموع الكلي: " + formattedTotal + "\n" +
-                      "👤 اسم الزبون: " + customerName + "\n" +
-                      "📍 العنوان: " + customerAddress;
-
-        var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
-        window.open(url, '_blank');
-    }
-</script>
-
+    </script>
 
 </body>
 </html>
