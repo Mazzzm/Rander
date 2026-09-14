@@ -103,7 +103,6 @@
             font-size: 14px;
         }
 
-        /* شريط البحث */
         .search-container {
             display: none;
             padding: 12px 16px;
@@ -124,7 +123,6 @@
             outline: none;
         }
 
-        /* شريط الأقسام */
         .categories-section {
             padding: 16px 0;
             max-width: 1100px;
@@ -279,14 +277,15 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
 
         .cart-qty-btn {
             background: var(--bg-primary);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
@@ -310,7 +309,6 @@
             font-size: 13px;
         }
 
-        /* الإشعارات المنبثقة Toast */
         .toast-notification {
             position: fixed;
             bottom: 80px;
@@ -477,13 +475,13 @@
         </div>
     </main>
 
-    <!-- نافذة السلة الشاملة والاحترافية -->
-    <div id="cart-modal" class="modal-overlay">
+    <!-- نافذة السلة الشاملة (إغلاق أوتوماتيكي عند اللمس بالخارج) -->
+    <div id="cart-modal" class="modal-overlay" onclick="closeCartOnOutsideClick(event)">
         <div class="modal-card">
             <h3 style="text-align:center; margin-bottom:15px;">🛒 سلة المشتريات</h3>
             
             <div id="cart-items-list">
-                <!-- عناصر السلة تُضاف هنا -->
+                <!-- عناصر السلة -->
             </div>
 
             <div id="cart-summary-area">
@@ -505,7 +503,7 @@
                         <option value="محافظة أخرى" data-delivery="5000">باقي المحافظات (التوصيل: 5,000 د.ع)</option>
                     </select>
 
-                    <label style="font-size:12px; font-weight:bold;">العنوان التفصيلي (المنطقة / اقرب نقطة دالة):</label>
+                    <label style="font-size:12px; font-weight:bold;">العنوان التفصيلي:</label>
                     <input type="text" id="cust-address" class="form-input" placeholder="مثال: حي الجامعة - قرب المحطة">
 
                     <label style="font-size:12px; font-weight:bold;">رقم الهاتف:</label>
@@ -527,6 +525,11 @@
                     <button onclick="closeCartModal()" style="background:transparent; border:1px solid var(--border-color); border-radius:10px; color:var(--text-secondary); padding:10px; font-weight:bold; flex:1; cursor:pointer;">إغلاق</button>
                 </div>
             </div>
+
+            <!-- زر إغلاق للسلة الفارغة -->
+            <div id="cart-empty-close-btn" style="display:none; margin-top:20px; text-align:center;">
+                <button onclick="closeCartModal()" style="background:var(--accent); color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; width:100%; cursor:pointer;">إغلاق السلة</button>
+            </div>
         </div>
     </div>
 
@@ -539,15 +542,12 @@
     </nav>
 
     <script>
-        // تحميل السلة المحفوظة من الـ LocalStorage أو البدء بمصفوفة فارغة
         var cartArray = JSON.parse(localStorage.getItem('rander_cart')) || [];
 
-        // عند تحميل الصفحة أول مرة
         document.addEventListener("DOMContentLoaded", function() {
             updateCartCounter();
         });
 
-        // حفظ السلة في الذاكرة المحلية
         function saveCartToStorage() {
             localStorage.setItem('rander_cart', JSON.stringify(cartArray));
             updateCartCounter();
@@ -609,7 +609,6 @@
             });
         }
 
-        // إضافة منتج للسلة
         function addToCart(buttonElement, productName, unitPrice) {
             var productCard = buttonElement.closest('.product-card');
             var optionSelect = productCard.querySelector('.product-option');
@@ -617,7 +616,6 @@
             var qtyInput = productCard.querySelector('.product-qty');
             var quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
 
-            // التحقق مما إذا كان المنتج موجوداً مسبقاً بنفس الخيار
             var existingItem = cartArray.find(function(item) {
                 return item.name === productName && item.option === selectedOption;
             });
@@ -654,14 +652,17 @@
         function renderCartModal() {
             var container = document.getElementById('cart-items-list');
             var summaryArea = document.getElementById('cart-summary-area');
+            var emptyCloseBtn = document.getElementById('cart-empty-close-btn');
 
             if (cartArray.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:30px 10px; color:var(--text-secondary);">السلة فارغة حالياً 🛍️</div>';
+                container.innerHTML = '<div style="text-align:center; padding:30px 10px; color:var(--text-secondary); font-weight:bold;">سلتك فارغة حالياً 🛍️</div>';
                 summaryArea.style.display = 'none';
+                emptyCloseBtn.style.display = 'block';
                 return;
             }
 
             summaryArea.style.display = 'block';
+            emptyCloseBtn.style.display = 'none';
             var html = '';
 
             cartArray.forEach(function(item, index) {
@@ -710,6 +711,13 @@
             document.getElementById('cart-modal').style.display = 'none';
         }
 
+        // إغلاق النافذة عند الضغط في أي مكان خارج المربع
+        function closeCartOnOutsideClick(e) {
+            if (e.target.id === 'cart-modal') {
+                closeCartModal();
+            }
+        }
+
         function sendAllCartToWhatsApp() {
             if (cartArray.length === 0) return;
 
@@ -753,7 +761,6 @@
             var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
             window.open(url, '_blank');
 
-            // تفريغ السلة بعد نجاح الطلب
             cartArray = [];
             saveCartToStorage();
             closeCartModal();
