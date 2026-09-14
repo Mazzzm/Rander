@@ -46,7 +46,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* شريط التنبيهات علوي */
         .announcement-bar {
             background-color: var(--accent);
             color: #ffffff;
@@ -56,7 +55,6 @@
             font-weight: 600;
         }
 
-        /* الهيدر */
         header {
             background: var(--bg-card);
             color: var(--text-primary);
@@ -88,7 +86,6 @@
             cursor: pointer;
         }
 
-        /* البانر الرئيسي */
         .hero {
             padding: 30px 20px;
             text-align: center;
@@ -106,17 +103,41 @@
             font-size: 14px;
         }
 
-        /* شريط شريط الأقسام (Categories Bar) */
+        /* شريط البحث المدمج */
+        .search-container {
+            display: none;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
         .categories-section {
             padding: 16px 0;
             max-width: 1100px;
             margin: auto;
             overflow-x: auto;
             white-space: nowrap;
-            scrollbar-width: none; /* Hide scrollbar for Firefox */
+            scrollbar-width: none;
         }
         .categories-section::-webkit-scrollbar {
-            display: none; /* Hide scrollbar for Chrome/Safari */
+            display: none;
         }
 
         .categories-container {
@@ -146,7 +167,6 @@
             border-color: var(--accent);
         }
 
-        /* شبكة المنتجات */
         .products-section {
             padding: 0 16px 40px;
             max-width: 1100px;
@@ -164,7 +184,6 @@
             gap: 16px;
         }
 
-        /* بطاقة المنتج */
         .product-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -250,7 +269,6 @@
             margin-top: 8px;
         }
 
-        /* نافذة الطلب (Modal) */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -331,7 +349,7 @@
             cursor: pointer;
         }
 
-        /* شريط الملاحة السفلي للجوال */
+        /* شريط الملاحة السفلي */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -354,6 +372,9 @@
             text-decoration: none;
             font-size: 11px;
             font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
         }
 
         .nav-item.active {
@@ -365,7 +386,6 @@
             margin-bottom: 2px;
         }
 
-        /* شريط تثبيت PWA */
         .pwa-banner {
             position: fixed;
             bottom: 70px;
@@ -415,7 +435,7 @@
 
     <header>
         <div class="logo">RANDER</div>
-        <button class="cart-btn" id="cart-counter">🛒 السلة (0)</button>
+        <button class="cart-btn" id="cart-counter" onclick="scrollToCart()">🛒 السلة (0)</button>
     </header>
 
     <section class="hero">
@@ -423,8 +443,13 @@
         <p>اختر القسم وتصفح أفضل العروض والأسعار المنافسة</p>
     </section>
 
+    <!-- شريط البحث الفعلي -->
+    <div class="search-container" id="search-box">
+        <input type="text" id="search-input" class="search-input" placeholder="🔍 اكتب اسم المنتج للبحث..." oninput="searchProducts()">
+    </div>
+
     <!-- شريط الأقسام -->
-    <div class="categories-section">
+    <div class="categories-section" id="categories-bar">
         <div class="categories-container">
             <button class="category-chip active" onclick="filterCategory('all', this)">✨ الكل</button>
             <button class="category-chip" onclick="filterCategory('school', this)">🎒 مستلزمات مدرسية</button>
@@ -619,28 +644,87 @@
         </div>
     </div>
 
-    <!-- شريط الملاحة السفلي -->
+    <!-- شريط الملاحة السفلي التفاعلي -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active"><span>🏠</span>الرئيسية</a>
-        <a href="#" class="nav-item"><span>📦</span>الأقسام</a>
-        <a href="#" class="nav-item"><span>🔍</span>البحث</a>
-        <a href="#" class="nav-item"><span>🛒</span>السلة</a>
+        <button class="nav-item active" onclick="navGoHome(this)">
+            <span>🏠</span>الرئيسية
+        </button>
+        <button class="nav-item" onclick="navGoCategories(this)">
+            <span>📦</span>الأقسام
+        </button>
+        <button class="nav-item" onclick="navToggleSearch(this)">
+            <span>🔍</span>البحث
+        </button>
+        <button class="nav-item" onclick="navGoCart(this)">
+            <span>🛒</span>السلة
+        </button>
     </nav>
 
     <script>  
         var totalCartCount = 0;
         var currentOrderData = null;
 
+        // التبديل بين أزرار الملاحة السفلي
+        function setActiveNav(btnElement) {
+            var items = document.querySelectorAll('.nav-item');
+            items.forEach(function(item) { item.classList.remove('active'); });
+            btnElement.classList.add('active');
+        }
+
+        // 1. زر الرئيسية
+        function navGoHome(btnElement) {
+            setActiveNav(btnElement);
+            document.getElementById('search-box').style.display = 'none';
+            filterCategory('all', document.querySelector('.category-chip'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 2. زر الأقسام
+        function navGoCategories(btnElement) {
+            setActiveNav(btnElement);
+            var catBar = document.getElementById('categories-bar');
+            catBar.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 3. زر البحث
+        function navToggleSearch(btnElement) {
+            setActiveNav(btnElement);
+            var searchBox = document.getElementById('search-box');
+            if (searchBox.style.display === 'block') {
+                searchBox.style.display = 'none';
+            } else {
+                searchBox.style.display = 'block';
+                document.getElementById('search-input').focus();
+            }
+        }
+
+        // 4. زر السلة
+        function navGoCart(btnElement) {
+            setActiveNav(btnElement);
+            alert("🛒 لديك حالياً " + totalCartCount + " منتجات في السلة.\nلإكمال الطلب اضغط على 'اطلب عبر واتساب' تحت أي منتج.");
+        }
+
+        // البحث التفاعلي في المنتجات
+        function searchProducts() {
+            var query = document.getElementById('search-input').value.toLowerCase().trim();
+            var cards = document.querySelectorAll('.product-card');
+
+            cards.forEach(function(card) {
+                var title = card.querySelector('.product-title').innerText.toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
         // دالة التصفية حسب الأقسام
         function filterCategory(categoryName, btnElement) {
-            // تحديث الشكل النشاط للأزرار
             var buttons = document.querySelectorAll('.category-chip');
-            buttons.forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            btnElement.classList.add('active');
+            buttons.forEach(function(btn) { btn.classList.remove('active'); });
+            if (btnElement) btnElement.classList.add('active');
 
-            // إظهار وإخفاء المنتجات
             var cards = document.querySelectorAll('.product-card');
             cards.forEach(function(card) {
                 if (categoryName === 'all' || card.getAttribute('data-category') === categoryName) {
@@ -650,14 +734,14 @@
                 }
             });
 
-            // تغيير العنوان
             var heading = document.getElementById('section-heading');
-            heading.innerText = btnElement.innerText.replace(/[^\u0600-\u06FF\s]/g, '').trim();
+            if (btnElement) {
+                heading.innerText = btnElement.innerText.replace(/[^\u0600-\u06FF\s]/g, '').trim();
+            }
         }
 
         function openOrderModal(buttonElement, productName, unitPrice) {
             var productCard = buttonElement.closest('.product-card');
-            
             var optionSelect = productCard.querySelector('.product-option');
             var selectedOption = optionSelect ? optionSelect.value : "قياسي";
 
@@ -683,7 +767,6 @@
 
         function handleFormSubmit(event) {
             event.preventDefault();
-
             if (!currentOrderData) return;
 
             var customerName = document.getElementById('cust-name').value.trim();
