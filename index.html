@@ -270,6 +270,92 @@
             border-radius: 6px;
             font-size: 12px;
             font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* نافذة الطلب (Modal) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: 2px solid var(--accent);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            flex: 2;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            flex: 1;
+            cursor: pointer;
         }
 
         /* شريط انقطاع الاتصال */
@@ -328,13 +414,34 @@
                     <input type="number" class="product-qty" value="1" min="1">
                 </div>
 
-                <button class="buy-button" onclick="sendOrder(this, 'كوب قهوة RANDER', 12000)">
+                <button class="buy-button" onclick="openOrderModal(this, 'كوب قهوة RANDER', 12000)">
                     اطلب عبر واتساب 💬
                 </button>
             </div>
 
         </div>
     </main>
+
+    <!-- نافذة إدخال بيانات الطلب (Modal) -->
+    <div id="order-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-title">إكمال الطلب</div>
+            <form id="order-form" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label for="cust-name">الاسم الكامل</label>
+                    <input type="text" id="cust-name" class="form-input" placeholder="أدخل اسمك هنا..." required>
+                </div>
+                <div class="form-group">
+                    <label for="cust-address">العنوان (المحافظة / المنطقة)</label>
+                    <input type="text" id="cust-address" class="form-input" placeholder="مثال: بغداد / الكرادة" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-submit">تأكيد وإرسال 🚀</button>
+                    <button type="button" class="btn-cancel" onclick="closeOrderModal()">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- شريط تثبيت التطبيق PWA -->
     <div id="pwa-prompt" class="pwa-banner" style="display: none;">
@@ -355,9 +462,9 @@
 
     <script>  
         var totalCartCount = 0;
+        var currentOrderData = null;
 
-        function sendOrder(buttonElement, productName, unitPrice) {
-            var phoneNumber = "9647862253180";
+        function openOrderModal(buttonElement, productName, unitPrice) {
             var productCard = buttonElement.closest('.product-card');
             
             var optionSelect = productCard.querySelector('.product-option');
@@ -365,31 +472,53 @@
 
             var qtyInput = productCard.querySelector('.product-qty');
             var quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
-            
-            var totalPrice = unitPrice * quantity;
-            var formattedTotal = totalPrice.toLocaleString('ar-IQ') + " د.ع";
-            
-            var customerName = prompt("من فضلك اكتب اسمك الكامل:");
-            var customerAddress = prompt("من فضلك اكتب عنوانك (المحافظة / المنطقة):");
-            
-            if (!customerName || !customerAddress) {
-                alert("يرجى كتابة الاسم والعنوان لإكمال الطلب!");
-                return;
-            }
 
-            totalCartCount += quantity;
+            currentOrderData = {
+                productName: productName,
+                unitPrice: unitPrice,
+                selectedOption: selectedOption,
+                quantity: quantity
+            };
+
+            document.getElementById('order-modal').style.display = 'flex';
+            document.getElementById('cust-name').focus();
+        }
+
+        function closeOrderModal() {
+            document.getElementById('order-modal').style.display = 'none';
+            document.getElementById('order-form').reset();
+            currentOrderData = null;
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            if (!currentOrderData) return;
+
+            var customerName = document.getElementById('cust-name').value.trim();
+            var customerAddress = document.getElementById('cust-address').value.trim();
+
+            if (!customerName || !customerAddress) return;
+
+            var phoneNumber = "9647862253180";
+            var totalPrice = currentOrderData.unitPrice * currentOrderData.quantity;
+            var formattedTotal = totalPrice.toLocaleString('ar-IQ') + " د.ع";
+
+            totalCartCount += currentOrderData.quantity;
             document.getElementById('cart-counter').innerText = "🛒 السلة (" + totalCartCount + ")";
 
             var message = "مرحباً، أريد طلب المنتج التالي:\n" +
-                          "📦 المنتج: " + productName + "\n" +
-                          "📏 الخيار: " + selectedOption + "\n" +
-                          "🔢 الكمية: " + quantity + "\n" +
+                          "📦 المنتج: " + currentOrderData.productName + "\n" +
+                          "📏 الخيار: " + currentOrderData.selectedOption + "\n" +
+                          "🔢 الكمية: " + currentOrderData.quantity + "\n" +
                           "💰 المجموع الكلي: " + formattedTotal + "\n" +
                           "👤 اسم الزبون: " + customerName + "\n" +
                           "📍 العنوان: " + customerAddress;
 
             var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
             window.open(url, '_blank');
+
+            closeOrderModal();
         }
 
         // إشعارات الأوفلاين
