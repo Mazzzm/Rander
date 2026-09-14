@@ -319,6 +319,33 @@
             font-size: 13px;
         }
 
+        /* تحسين أزرار التحكم بالكمية بالعرض */
+        .cart-qty-control {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 6px;
+            background: var(--bg-primary);
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cart-qty-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
         .toast-notification {
             position: fixed;
             bottom: 80px;
@@ -426,13 +453,16 @@
         </div>
     </div>
 
-    <!-- الأقسام -->
+    <!-- الأقسام المحدثة -->
     <div class="categories-section" id="categories-bar">
         <div class="categories-container">
             <button class="category-chip active" onclick="filterCategory('all', this)">✨ الكل</button>
             <button class="category-chip" onclick="filterCategory('school', this)">🎒 مستلزمات مدرسية</button>
             <button class="category-chip" onclick="filterCategory('ipads', this)">📱 ايبادات</button>
             <button class="category-chip" onclick="filterCategory('phones', this)">📲 هواتف</button>
+            <button class="category-chip" onclick="filterCategory('used', this)">🔄 أجهزة مستعملة</button>
+            <button class="category-chip" onclick="filterCategory('watches', this)">⌚ ساعات ذكية</button>
+            <button class="category-chip" onclick="filterCategory('gaming', this)">🎮 ألعاب وقيمنق</button>
             <button class="category-chip" onclick="filterCategory('accessories', this)">🎧 إكسسوارات</button>
         </div>
     </div>
@@ -441,12 +471,13 @@
         <h2 class="section-title" id="section-heading">جميع المنتجات</h2>
         <div class="products-grid" id="main-products-grid">
             
+            <!-- مستلزمات مدرسية -->
             <div class="product-card" data-id="p1" data-category="school">
                 <span class="badge">🔥 الأكثر مبيعاً</span>
                 <button class="fav-btn" onclick="toggleFavorite('p1', this)">🤍</button>
                 <img src="https://via.placeholder.com/250?text=حقيبة+مدرسية" class="product-image" onclick="openProductDetail('p1', 'حقيبة ظهر مدرسية', 25000, 'حقيبة ظهر فائقة الجودة مقاومة للماء مع منفذ USB للشحن.')">
                 <div class="product-title">حقيبة ظهر مدرسية مقاومة للماء</div>
-                <div class="stars-rating" onclick="openReviewsModal('حقيبة ظهر مدرسية')">⭐️⭐️⭐️⭐️⭐️ (12 مراجعة)</div>
+                <div class="stars-rating" onclick="openReviewsModal('حقيبة ظهر مدرسية')">⭐️⭐️⭐️⭐️⭐️ (12)</div>
                 <div class="product-price">25,000 د.ع</div>
                 <div class="control-group">
                     <label>اللون:</label>
@@ -460,12 +491,13 @@
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'حقيبة ظهر مدرسية', 25000)">شراء سريع ⚡</button>
             </div>
 
+            <!-- ايبادات -->
             <div class="product-card" data-id="p2" data-category="ipads">
                 <span class="badge">💥 خصم</span>
                 <button class="fav-btn" onclick="toggleFavorite('p2', this)">🤍</button>
-                <img src="https://via.placeholder.com/250?text=iPad+Air" class="product-image" onclick="openProductDetail('p2', 'iPad Air 2024', 780000, 'جهاز ايباد اير أصلية بشاشة Retina فائقة الدقة وأداء سريع جداً.')">
+                <img src="https://via.placeholder.com/250?text=iPad+Air" class="product-image" onclick="openProductDetail('p2', 'iPad Air 2024', 780000, 'جهاز ايباد اير أصلية بشاشة Retina فائقة الدقة.')">
                 <div class="product-title">iPad Air (2024)</div>
-                <div class="stars-rating" onclick="openReviewsModal('iPad Air 2024')">⭐️⭐️⭐️⭐️☆ (8 مراجعات)</div>
+                <div class="stars-rating" onclick="openReviewsModal('iPad Air 2024')">⭐️⭐️⭐️⭐️☆ (8)</div>
                 <div class="product-price">780,000 د.ع</div>
                 <div class="control-group">
                     <label>السعة:</label>
@@ -477,6 +509,104 @@
                 </div>
                 <button class="buy-button" onclick="addToCart(this, 'iPad Air 2024', 780000)">إضافة إلى السلة 🛒</button>
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'iPad Air 2024', 780000)">شراء سريع ⚡</button>
+            </div>
+
+            <!-- هواتف -->
+            <div class="product-card" data-id="p3" data-category="phones">
+                <span class="badge">✨ جديد</span>
+                <button class="fav-btn" onclick="toggleFavorite('p3', this)">🤍</button>
+                <img src="https://via.placeholder.com/250?text=iPhone+15" class="product-image" onclick="openProductDetail('p3', 'iPhone 15 Pro Max', 1450000, 'هاتف ايفون 15 بروماكس الجديد كلياً بهيكل من التيتانيوم.')">
+                <div class="product-title">iPhone 15 Pro Max</div>
+                <div class="stars-rating" onclick="openReviewsModal('iPhone 15 Pro Max')">⭐️⭐️⭐️⭐️⭐️ (19)</div>
+                <div class="product-price">1,450,000 د.ع</div>
+                <div class="control-group">
+                    <label>اللون:</label>
+                    <select class="product-option"><option value="تيتانيوم طبيعي">تيتانيوم طبيعي</option><option value="تيتانيوم أسود">تيتانيوم أسود</option></select>
+                </div>
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+                <button class="buy-button" onclick="addToCart(this, 'iPhone 15 Pro Max', 1450000)">إضافة إلى السلة 🛒</button>
+                <button class="quick-buy-btn" onclick="quickBuy(this, 'iPhone 15 Pro Max', 1450000)">شراء سريع ⚡</button>
+            </div>
+
+            <!-- أجهزة مستعملة -->
+            <div class="product-card" data-id="p4" data-category="used">
+                <span class="badge" style="background:#8b5cf6;">♻️ نظيف جداً</span>
+                <button class="fav-btn" onclick="toggleFavorite('p4', this)">🤍</button>
+                <img src="https://via.placeholder.com/250?text=iPhone+13+Used" class="product-image" onclick="openProductDetail('p4', 'iPhone 13 مستعمل (درجة أولى)', 620000, 'جهاز ايفون 13 مستعمل بحالة الزيرو، نسبة البطارية 88% بدون أي تصليح.')">
+                <div class="product-title">iPhone 13 مستعمل (درجة أولى)</div>
+                <div class="stars-rating" onclick="openReviewsModal('iPhone 13 مستعمل')">⭐️⭐️⭐️⭐️☆ (5)</div>
+                <div class="product-price">620,000 د.ع</div>
+                <div class="control-group">
+                    <label>اللون:</label>
+                    <select class="product-option"><option value="أزرق">أزرق</option><option value="وردي">وردي</option></select>
+                </div>
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+                <button class="buy-button" onclick="addToCart(this, 'iPhone 13 مستعمل', 620000)">إضافة إلى السلة 🛒</button>
+                <button class="quick-buy-btn" onclick="quickBuy(this, 'iPhone 13 مستعمل', 620000)">شراء سريع ⚡</button>
+            </div>
+
+            <!-- ساعات ذكية -->
+            <div class="product-card" data-id="p5" data-category="watches">
+                <button class="fav-btn" onclick="toggleFavorite('p5', this)">🤍</button>
+                <img src="https://via.placeholder.com/250?text=Smart+Watch" class="product-image" onclick="openProductDetail('p5', 'ساعة ذكية Ultra 2', 45000, 'ساعة ذكية شبيهة بآبل الترا تدعم الاتصالات وقياس النبض.')">
+                <div class="product-title">ساعة ذكية Ultra 2 ذكية</div>
+                <div class="stars-rating" onclick="openReviewsModal('ساعة ذكية Ultra 2')">⭐️⭐️⭐️⭐️⭐️ (15)</div>
+                <div class="product-price">45,000 د.ع</div>
+                <div class="control-group">
+                    <label>اللون:</label>
+                    <select class="product-option"><option value="برتقالي">برتقالي</option><option value="أسود">أسود</option></select>
+                </div>
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+                <button class="buy-button" onclick="addToCart(this, 'ساعة ذكية Ultra 2', 45000)">إضافة إلى السلة 🛒</button>
+                <button class="quick-buy-btn" onclick="quickBuy(this, 'ساعة ذكية Ultra 2', 45000)">شراء سريع ⚡</button>
+            </div>
+
+            <!-- ألعاب وقيمنق -->
+            <div class="product-card" data-id="p6" data-category="gaming">
+                <span class="badge" style="background:#10b981;">🎮 القيمنق</span>
+                <button class="fav-btn" onclick="toggleFavorite('p6', this)">🤍</button>
+                <img src="https://via.placeholder.com/250?text=PS5+Controller" class="product-image" onclick="openProductDetail('p6', 'يد تحكم PS5 DualSense', 95000, 'يد تحكم بلايستيشن 5 الأصلية مع دعم الاهتزاز التفاعلي.')">
+                <div class="product-title">يد تحكم بلايستيشن PS5</div>
+                <div class="stars-rating" onclick="openReviewsModal('يد تحكم PS5')">⭐️⭐️⭐️⭐️⭐️ (22)</div>
+                <div class="product-price">95,000 د.ع</div>
+                <div class="control-group">
+                    <label>اللون:</label>
+                    <select class="product-option"><option value="أبيض">أبيض</option><option value="أسود">أسود</option></select>
+                </div>
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+                <button class="buy-button" onclick="addToCart(this, 'يد تحكم PS5', 95000)">إضافة إلى السلة 🛒</button>
+                <button class="quick-buy-btn" onclick="quickBuy(this, 'يد تحكم PS5', 95000)">شراء سريع ⚡</button>
+            </div>
+
+            <!-- إكسسوارات -->
+            <div class="product-card" data-id="p7" data-category="accessories">
+                <button class="fav-btn" onclick="toggleFavorite('p7', this)">🤍</button>
+                <img src="https://via.placeholder.com/250?text=AirPods" class="product-image" onclick="openProductDetail('p7', 'سماعة بلوتوث RANDER', 35000, 'سماعة بلوتوث لاسلكية عازلة للضوضاء وصوت مجسم.')">
+                <div class="product-title">سماعة بلوتوث لاسلكية RANDER</div>
+                <div class="stars-rating" onclick="openReviewsModal('سماعة بلوتوث RANDER')">⭐️⭐️⭐️⭐️☆ (10)</div>
+                <div class="product-price">35,000 د.ع</div>
+                <div class="control-group">
+                    <label>اللون:</label>
+                    <select class="product-option"><option value="أبيض">أبيض</option><option value="أسود">أسود</option></select>
+                </div>
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+                <button class="buy-button" onclick="addToCart(this, 'سماعة بلوتوث RANDER', 35000)">إضافة إلى السلة 🛒</button>
+                <button class="quick-buy-btn" onclick="quickBuy(this, 'سماعة بلوتوث RANDER', 35000)">شراء سريع ⚡</button>
             </div>
 
         </div>
@@ -493,7 +623,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل المنتج والمُوصي الذكي -->
+    <!-- نافذة تفاصيل المنتج -->
     <div id="detail-modal" class="modal-overlay">
         <div class="modal-card">
             <h3 id="detail-title" style="margin-bottom:8px;"></h3>
@@ -503,15 +633,15 @@
             <hr style="border-color:var(--border-color); margin:15px 0;">
             <h4 style="font-size:13px; margin-bottom:8px;">🤖 منتجات مقترحة قد تعجبك:</h4>
             <div id="ai-recommendations" style="font-size:12px; color:var(--text-secondary);">
-                • سماعة بلوتوث لاسلكية RANDER <br>
-                • كفر حماية مقاوم للكسر
+                • شاحن سريع 65W متوافق <br>
+                • باكة حماية كاملة للشاشة
             </div>
 
             <button onclick="closeDetailModal()" style="margin-top:20px; background:var(--accent); color:white; border:none; padding:10px; border-radius:8px; width:100%; font-weight:bold; cursor:pointer;">إغلاق</button>
         </div>
     </div>
 
-    <!-- نافذة المراجعات والتقييمات -->
+    <!-- نافذة المراجعات -->
     <div id="reviews-modal" class="modal-overlay">
         <div class="modal-card">
             <h3 id="reviews-product-title" style="margin-bottom:10px;"></h3>
@@ -528,7 +658,7 @@
         </div>
     </div>
 
-    <!-- نافذة السلة الشاملة -->
+    <!-- نافذة السلة الشاملة (مع زر الإغلاق الدائم والتحكم بالعرض) -->
     <div id="cart-modal" class="modal-overlay" onclick="closeCartOnOutsideClick(event)">
         <div class="modal-card">
             <h3 style="text-align:center; margin-bottom:15px;">🛒 سلة المشتريات</h3>
@@ -564,8 +694,10 @@
                 </div>
 
                 <button class="buy-button" style="margin-top:12px;" onclick="sendAllCartToWhatsApp()">تأكيد وإرسال الطلب 💬</button>
-                <button onclick="closeCartModal()" style="margin-top:6px; background:transparent; border:none; color:var(--text-secondary); width:100%; cursor:pointer;">إغلاق</button>
             </div>
+
+            <!-- زر إغلاق دائم موحد لجميع الحالات -->
+            <button onclick="closeCartModal()" style="margin-top:12px; background:var(--bg-primary); border:1px solid var(--border-color); color:var(--text-primary); padding:10px; border-radius:10px; width:100%; font-weight:bold; cursor:pointer;">إغلاق السلة</button>
         </div>
     </div>
 
@@ -587,7 +719,6 @@
             updateCartCounter();
             syncFavoritesUI();
             
-            // تسجيل خدمة PWA Service Worker
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('data:text/javascript,console.log("PWA Ready");');
             }
@@ -788,7 +919,7 @@
         function renderCartModal() {
             var container = document.getElementById('cart-items-list');
             if (cartArray.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary);">السلة فارغة حالياً 🛍️</div>';
+                container.innerHTML = '<div style="text-align:center; padding:25px 10px; color:var(--text-secondary); font-weight:bold;">سلتك فارغة حالياً 🛍️</div>';
                 document.getElementById('cart-summary-area').style.display = 'none';
                 return;
             }
@@ -796,16 +927,17 @@
             document.getElementById('cart-summary-area').style.display = 'block';
             var html = '';
             cartArray.forEach(function(item, index) {
-                html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border-color);">' +
+                html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">' +
                             '<div>' +
                                 '<div style="font-weight:bold; font-size:13px;">' + item.name + '</div>' +
                                 '<div style="font-size:11px; color:var(--text-secondary);">' + item.option + '</div>' +
-                                '<div style="font-weight:bold; color:var(--accent); font-size:12px;">' + (item.price * item.qty).toLocaleString('ar-IQ') + ' د.ع</div>' +
+                                '<div style="font-weight:bold; color:var(--accent); font-size:12px; margin-top:2px;">' + (item.price * item.qty).toLocaleString('ar-IQ') + ' د.ع</div>' +
                             '</div>' +
-                            '<div style="display:flex; align-items:center; gap:6px;">' +
-                                '<button onclick="changeCartQty(' + index + ', -1)">-</button>' +
-                                '<span>' + item.qty + '</span>' +
-                                '<button onclick="changeCartQty(' + index + ', 1)">+</button>' +
+                            '<!-- تحكم أفقية بالعرض -->' +
+                            '<div class="cart-qty-control">' +
+                                '<button class="cart-qty-btn" onclick="changeCartQty(' + index + ', -1)">-</button>' +
+                                '<span style="font-weight:bold; font-size:13px; min-width:18px; text-align:center;">' + item.qty + '</span>' +
+                                '<button class="cart-qty-btn" onclick="changeCartQty(' + index + ', 1)">+</button>' +
                             '</div>' +
                         '</div>';
             });
