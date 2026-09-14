@@ -90,21 +90,60 @@
 
         /* البانر الرئيسي */
         .hero {
-            padding: 40px 20px;
+            padding: 30px 20px;
             text-align: center;
             background: var(--bg-card);
-            margin-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
         }
 
         .hero h1 {
-            font-size: 28px;
+            font-size: 26px;
             margin-bottom: 8px;
         }
 
         .hero p {
             color: var(--text-secondary);
-            font-size: 15px;
+            font-size: 14px;
+        }
+
+        /* شريط شريط الأقسام (Categories Bar) */
+        .categories-section {
+            padding: 16px 0;
+            max-width: 1100px;
+            margin: auto;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+        }
+        .categories-section::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome/Safari */
+        }
+
+        .categories-container {
+            display: inline-flex;
+            gap: 10px;
+            padding: 0 16px;
+        }
+
+        .category-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-chip.active {
+            background: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent);
         }
 
         /* شبكة المنتجات */
@@ -121,7 +160,7 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 16px;
         }
 
@@ -159,7 +198,7 @@
         }
 
         .product-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             margin-bottom: 6px;
         }
@@ -209,6 +248,87 @@
             cursor: pointer;
             width: 100%;
             margin-top: 8px;
+        }
+
+        /* نافذة الطلب (Modal) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            flex: 2;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            flex: 1;
+            cursor: pointer;
         }
 
         /* شريط الملاحة السفلي للجوال */
@@ -273,92 +393,6 @@
             cursor: pointer;
         }
 
-        /* نافذة الطلب (Modal) */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 16px;
-        }
-
-        .modal-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-
-        .form-input:focus {
-            outline: 2px solid var(--accent);
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn-submit {
-            background: #25D366;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            flex: 2;
-            cursor: pointer;
-        }
-
-        .btn-cancel {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            flex: 1;
-            cursor: pointer;
-        }
-
-        /* شريط انقطاع الاتصال */
         .offline-status {
             display: none;
             background: #ef4444;
@@ -386,26 +420,38 @@
 
     <section class="hero">
         <h1>متجر RANDER الرسمي</h1>
-        <p>تسوق أفضل المنتجات العراقية بضمان الجودة وأقل الأسعار</p>
+        <p>اختر القسم وتصفح أفضل العروض والأسعار المنافسة</p>
     </section>
 
+    <!-- شريط الأقسام -->
+    <div class="categories-section">
+        <div class="categories-container">
+            <button class="category-chip active" onclick="filterCategory('all', this)">✨ الكل</button>
+            <button class="category-chip" onclick="filterCategory('school', this)">🎒 مستلزمات مدرسية</button>
+            <button class="category-chip" onclick="filterCategory('ipads', this)">📱 ايبادات</button>
+            <button class="category-chip" onclick="filterCategory('phones', this)">📲 هواتف</button>
+            <button class="category-chip" onclick="filterCategory('used', this)">🔄 أجهزة مستعملة</button>
+            <button class="category-chip" onclick="filterCategory('accessories', this)">🎧 إكسسوارات</button>
+        </div>
+    </div>
+
     <main class="products-section">
-        <h2 class="section-title">المنتجات المميزة</h2>
+        <h2 class="section-title" id="section-heading">جميع المنتجات</h2>
         <div class="products-grid">
             
-            <!-- المنتج الأول -->
-            <div class="product-card">
+            <!-- مستلزمات مدرسية -->
+            <div class="product-card" data-category="school">
                 <span class="badge">🔥 الأكثر مبيعاً</span>
-                <img src="https://via.placeholder.com/250" alt="كوب قهوة" class="product-image">
-                <div class="product-title">كوب قهوة RANDER</div>
-                <div class="product-price">12,000 د.ع</div>
+                <img src="https://via.placeholder.com/250?text=حقيبة+مدرسية" alt="حقيبة مدرسية" class="product-image">
+                <div class="product-title">حقيبة ظهر مدرسية مقاومة للماء</div>
+                <div class="product-price">25,000 د.ع</div>
                 
                 <div class="control-group">
-                    <label>الحجم:</label>
+                    <label>اللون:</label>
                     <select class="product-option">
-                        <option value="صغير (250ml)">صغير (250ml)</option>
-                        <option value="وسط (350ml)">وسط (350ml)</option>
-                        <option value="كبير (500ml)">كبير (500ml)</option>
+                        <option value="أسود">أسود</option>
+                        <option value="كحلي">كحلي</option>
+                        <option value="وردي">وردي</option>
                     </select>
                 </div>
 
@@ -414,7 +460,128 @@
                     <input type="number" class="product-qty" value="1" min="1">
                 </div>
 
-                <button class="buy-button" onclick="openOrderModal(this, 'كوب قهوة RANDER', 12000)">
+                <button class="buy-button" onclick="openOrderModal(this, 'حقيبة ظهر مدرسية', 25000)">
+                    اطلب عبر واتساب 💬
+                </button>
+            </div>
+
+            <div class="product-card" data-category="school">
+                <img src="https://via.placeholder.com/250?text=دفتر+ذكي" alt="دفتر ملاحظات" class="product-image">
+                <div class="product-title">طقم دفاتر جامعية (5 قطع)</div>
+                <div class="product-price">10,000 د.ع</div>
+                
+                <div class="control-group">
+                    <label>النوع:</label>
+                    <select class="product-option">
+                        <option value="مخطط">مخطط</option>
+                        <option value="مربع">مربع</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+
+                <button class="buy-button" onclick="openOrderModal(this, 'طقم دفاتر جامعية', 10000)">
+                    اطلب عبر واتساب 💬
+                </button>
+            </div>
+
+            <!-- ايبادات -->
+            <div class="product-card" data-category="ipads">
+                <span class="badge">💥 خصم</span>
+                <img src="https://via.placeholder.com/250?text=iPad+Air" alt="iPad Air" class="product-image">
+                <div class="product-title">iPad Air (2024)</div>
+                <div class="product-price">780,000 د.ع</div>
+                
+                <div class="control-group">
+                    <label>السعة:</label>
+                    <select class="product-option">
+                        <option value="128GB">128GB</option>
+                        <option value="256GB">256GB</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+
+                <button class="buy-button" onclick="openOrderModal(this, 'iPad Air 2024', 780000)">
+                    اطلب عبر واتساب 💬
+                </button>
+            </div>
+
+            <!-- هواتف -->
+            <div class="product-card" data-category="phones">
+                <span class="badge">✨ جديد</span>
+                <img src="https://via.placeholder.com/250?text=iPhone+15" alt="iPhone 15" class="product-image">
+                <div class="product-title">iPhone 15 Pro Max</div>
+                <div class="product-price">1,450,000 د.ع</div>
+                
+                <div class="control-group">
+                    <label>اللون:</label>
+                    <select class="product-option">
+                        <option value="تيتانيوم طبيعي">تيتانيوم طبيعي</option>
+                        <option value="تيتانيوم أسود">تيتانيوم أسود</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+
+                <button class="buy-button" onclick="openOrderModal(this, 'iPhone 15 Pro Max', 1450000)">
+                    اطلب عبر واتساب 💬
+                </button>
+            </div>
+
+            <!-- أجهزة مستعملة -->
+            <div class="product-card" data-category="used">
+                <span class="badge" style="background:#6366f1;">👌 نظيف جداً</span>
+                <img src="https://via.placeholder.com/250?text=iPad+9th+Used" alt="iPad مستعمل" class="product-image">
+                <div class="product-title">iPad 9th Gen (مستعمل 95%)</div>
+                <div class="product-price">320,000 د.ع</div>
+                
+                <div class="control-group">
+                    <label>الحالة:</label>
+                    <select class="product-option">
+                        <option value="64GB - نسبة البطارية 92%">64GB - بطارية 92%</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+
+                <button class="buy-button" onclick="openOrderModal(this, 'iPad 9th مستعمل', 320000)">
+                    اطلب عبر واتساب 💬
+                </button>
+            </div>
+
+            <!-- إكسسوارات -->
+            <div class="product-card" data-category="accessories">
+                <img src="https://via.placeholder.com/250?text=AirPods" alt="سماعات" class="product-image">
+                <div class="product-title">سماعة بلوتوث لاسلكية RANDER</div>
+                <div class="product-price">35,000 د.ع</div>
+                
+                <div class="control-group">
+                    <label>اللون:</label>
+                    <select class="product-option">
+                        <option value="أبيض">أبيض</option>
+                        <option value="أسود">أسود</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+
+                <button class="buy-button" onclick="openOrderModal(this, 'سماعة بلوتوث RANDER', 35000)">
                     اطلب عبر واتساب 💬
                 </button>
             </div>
@@ -463,6 +630,30 @@
     <script>  
         var totalCartCount = 0;
         var currentOrderData = null;
+
+        // دالة التصفية حسب الأقسام
+        function filterCategory(categoryName, btnElement) {
+            // تحديث الشكل النشاط للأزرار
+            var buttons = document.querySelectorAll('.category-chip');
+            buttons.forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            btnElement.classList.add('active');
+
+            // إظهار وإخفاء المنتجات
+            var cards = document.querySelectorAll('.product-card');
+            cards.forEach(function(card) {
+                if (categoryName === 'all' || card.getAttribute('data-category') === categoryName) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // تغيير العنوان
+            var heading = document.getElementById('section-heading');
+            heading.innerText = btnElement.innerText.replace(/[^\u0600-\u06FF\s]/g, '').trim();
+        }
 
         function openOrderModal(buttonElement, productName, unitPrice) {
             var productCard = buttonElement.closest('.product-card');
@@ -521,7 +712,6 @@
             closeOrderModal();
         }
 
-        // إشعارات الأوفلاين
         window.addEventListener('offline', function() {
             document.getElementById('offline-banner').style.display = 'block';
         });
@@ -529,12 +719,10 @@
             document.getElementById('offline-banner').style.display = 'none';
         });
 
-        // إغلاق شريط الـ PWA
         function dismissPWA() {
             document.getElementById('pwa-prompt').style.display = 'none';
         }
 
-        // إظهار اقتراح PWA خفيف بعد ثوانٍ
         setTimeout(function() {
             document.getElementById('pwa-prompt').style.display = 'flex';
         }, 4000);
