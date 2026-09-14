@@ -602,7 +602,7 @@
             <div class="product-card" data-id="p1" data-category="school">
                 <span class="badge">🔥 الأكثر مبيعاً</span>
                 <button class="fav-btn" onclick="toggleFavorite('p1', this)">🤍</button>
-                <img src="https://i.ibb.co/gbJ164z5/IMG-1613.jpg" onclick="openProductDetail('p1')">
+                <img src="https://i.ibb.co/gbJ164z5/IMG-1613.jpg" class="product-image" onclick="openProductDetail('p1')">
 
                 <div class="product-title">حقيبة ظهر مدرسية مقاومة للماء</div>
                 <div class="stars-rating" onclick="openReviewsModal('حقيبة ظهر مدرسية')">⭐️⭐️⭐️⭐️⭐️ (12)</div>
@@ -618,10 +618,11 @@
                 <button class="buy-button" onclick="addToCart(this, 'حقيبة ظهر مدرسية', 25000)">إضافة إلى السلة 🛒</button>
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'حقيبة ظهر مدرسية', 25000)">شراء سريع ⚡</button>
             </div>
-            <div class="product-card" data-id="p1" data-category="english">
+            
+            <div class="product-card" data-id="p1_cup" data-category="english">
                 <span class="badge">🔥 الأكثر مبيعاً</span>
-                <button class="fav-btn" onclick="toggleFavorite('p1', this)">🤍</button>
-                <img src="https://i.imgur.com/OdaTU1c.jpeg" onclick="openProductDetail('p1')">
+                <button class="fav-btn" onclick="toggleFavorite('p1_cup', this)">🤍</button>
+                <img src="https://i.imgur.com/OdaTU1c.jpeg" class="product-image" onclick="openProductDetail('p1_cup')">
                 <div class="product-title">كوب قهوة بعبارة انگليزية مضحكة</div>
                 <div class="stars-rating" onclick="openReviewsModal('كوب قهوة بعبارة مضحكة')">⭐️⭐️⭐️⭐️⭐️ (12)</div>
                 <div class="product-price">5,000 د.ع</div>
@@ -633,8 +634,8 @@
                     <label>الكمية:</label>
                     <input type="number" class="product-qty" value="1" min="1">
                 </div>
-                <button class="buy-button" onclick="addToCart(this, 'كوب قهوة بعبارة انگليزية مضحكة', 25000)">إضافة إلى السلة 🛒</button>
-                <button class="quick-buy-btn" onclick="quickBuy(this, 'كوب قهوة بعبارة انگليزية مضحكة', 25000)">شراء سريع ⚡</button>
+                <button class="buy-button" onclick="addToCart(this, 'كوب قهوة بعبارة انگليزية مضحكة', 5000)">إضافة إلى السلة 🛒</button>
+                <button class="quick-buy-btn" onclick="quickBuy(this, 'كوب قهوة بعبارة انگليزية مضحكة', 5000)">شراء سريع ⚡</button>
             </div>
 
             <div class="product-card" data-id="p2" data-category="ipads">
@@ -804,7 +805,7 @@
                     <input type="text" id="cust-name" class="form-input" placeholder="الاسم الكامل">
                     <select id="cust-city" class="form-input" onchange="calculateGrandTotal()">
                         <option value="بغداد" data-delivery="3000">بغداد (3,000 د.ع)</option>
-                        <option value="المحافظات" data-delivery="5000">باقي المحافظات (5,000 د.ع)</option>
+                        <option value="المافظات" data-delivery="5000">باقي المحافظات (5,000 د.ع)</option>
                     </select>
                     <input type="text" id="cust-address" class="form-input" placeholder="العنوان التفصيلي">
                     <input type="tel" id="cust-phone" class="form-input" placeholder="رقم الهاتف">
@@ -842,7 +843,12 @@
             'p1': {
                 id: 'p1', name: 'حقيبة ظهر مدرسية مقاومة للماء', price: 25000,
                 desc: 'حقيبة ظهر فائقة الجودة ذات جيوب متعددة ومقاومة للماء بالكامل، مزودة بمنفذ USB خارجي لشحن الهواتف، ومناسبة للمدرسة والجامعة.',
-                images: ['https://via.placeholder.com/400?text=حقيبة+مدرسية+1', 'https://via.placeholder.com/400?text=حقيبة+مدرسية+2', 'https://via.placeholder.com/400?text=حقيبة+مدرسية+3']
+                images: ['https://i.ibb.co/gbJ164z5/IMG-1613.jpg']
+            },
+            'p1_cup': {
+                id: 'p1_cup', name: 'كوب قهوة بعبارة انگليزية مضحكة', price: 5000,
+                desc: 'كوب سيراميك عالي الجودة مع طباعة حرارية ثابتة لا تتأثر بالغسيل.',
+                images: ['https://i.imgur.com/OdaTU1c.jpeg']
             },
             'p2': {
                 id: 'p2', name: 'iPad Air (2024)', price: 780000,
@@ -884,8 +890,11 @@
             syncFavoritesUI();
             initPWAInstaller();
             
+            // تسجيل الـ Service Worker لتمكين ميزة الـ PWA والتثبيت
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('data:text/javascript,console.log("PWA Ready");');
+                navigator.serviceWorker.register('sw.js')
+                    .then(function(reg) { console.log('Service Worker Registered Successfully', reg); })
+                    .catch(function(err) { console.warn('Service Worker registration skipped/failed:', err); });
             }
 
             window.onscroll = function() {
@@ -933,11 +942,10 @@
             return text
                 .toLowerCase()
                 .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '') // إزالة الحركات والنقاط الخاصة
+                .replace(/[\u0300-\u036f]/g, '')
                 .trim();
         }
 
-        /* الكود المصلح للبحث ليدعم اللغة العربية والإنجليزية بدقة */
         function searchProducts() {
             var query = normalizeText(document.getElementById('search-input').value);
             var visibleCount = 0;
@@ -961,7 +969,6 @@
             }
         }
 
-        /* عرض التفاصيل + صور متعددة + اقتراح منتجات قابلة للنقر */
         function openProductDetail(pId) {
             var product = productsData[pId];
             if (!product) return;
@@ -1244,7 +1251,7 @@
 
         function triggerAppInstall() {
             if (!deferredPrompt) {
-                alert("التطبيق مثبت بالفعل أو أن متصفحك لا يدعم التثبيت المباشر. يمكنك إضافته للشاشة الرئيسية من خيارات المتصفح.");
+                alert("التطبيق مثبت بالفعل، أو قم بفتحه عبر متصفح Chrome أو Safari لتفعيله تلقائياً.");
                 return;
             }
             
