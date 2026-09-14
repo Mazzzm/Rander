@@ -1,66 +1,40 @@
-const CACHE_NAME = 'store-cache-v1';
+const CACHE_NAME = 'rander-store-v1';
 
-// قائمة الملفات الأساسية التي يتم تخزينها عند تثبيت الـ Service Worker
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/script.js'
-  // أضف هنا مسارات الصور أو الملفات الهامة الأخرى مثل: '/images/logo.png'
-];
-
-// 1. حدث التثبيت: حفظ الملفات الأساسية في الـ Cache والتفعيل المباشر
+// تثبيت الـ Service Worker
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
 });
 
-// 2. حدث التفعيل: الاستحواذ على المتصفح وتنظيف الكاش القديم
+// تفعيل وتحديث الـ Cache
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    Promise.all([
-      self.clients.claim(),
-      caches.keys().then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cache) => {
-            if (cache !== CACHE_NAME) {
-              return caches.delete(cache);
-            }
-          })
-        );
-      })
-    ])
-  );
+  event.waitUntil(self.clients.claim());
 });
 
-// 3. حدث Fetch: جلب الملف من الكاش أولاً، وإذا لم يوجد يجيبه من الشبكة
+// استراتيجية التحميل: البحث في الذاكرة أولاً ثم الشبكة (Cache First for Images)
 self.addEventListener('fetch', (event) => {
-  // تجاهل الطلبات التي ليست من نوع GET (مثل طلبات POST أو WhatsApp)
-  if (event.request.method !== 'GET') return;
-
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        // عدم تخزين الطلبات الخارجية أو الفاشلة
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-
-        // نسخ الاستجابة وتخزينها للمرات القادمة
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
+  const request = event.request;
+  
+  // إذا كان الطلب عبارة عن صورة
+  if (request.destination === 'image' || request.url.match(/\.(jpg|jpeg|png|gif|webp|svg)/)) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.match(request).then((cachedResponse) => {
+          // إذا كانت الصورة مخزنة سابقاً، اعرضها فوراً
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // إذا لم تكن مخزنة، جلبها من الإنترنت ثم تخزينها مستقبلاً
+          return fetch(request).then((networkResponse) => {
+            cache.put(request, networkResponse.clone());
+            return networkResponse;
+          });
         });
-
-        return networkResponse;
-      });
-    })
-  );
+      })
+    );
+  } else {
+    // باقي الطلبات العادية
+    event.respondWith(
+      caches.match(request).then((response) => response || fetch(request))
+    );
+  }
 });
