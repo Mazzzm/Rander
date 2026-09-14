@@ -128,6 +128,7 @@
             border-color: var(--accent);
         }
 
+        /* شريط الأقسام */
         .categories-section {
             padding: 16px 0;
             max-width: 1100px;
@@ -269,6 +270,7 @@
             margin-top: 8px;
         }
 
+        /* النوافذ المنبثقة (Modal) */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -298,27 +300,6 @@
             font-weight: bold;
             margin-bottom: 16px;
             text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 14px;
         }
 
         .modal-actions {
@@ -443,7 +424,7 @@
         <p>اختر القسم وتصفح أفضل العروض والأسعار المنافسة</p>
     </section>
 
-    <!-- شريط البحث الفعلي -->
+    <!-- شريط البحث -->
     <div class="search-container" id="search-box">
         <input type="text" id="search-input" class="search-input" placeholder="🔍 اكتب اسم المنتج للبحث..." oninput="searchProducts()">
     </div>
@@ -485,8 +466,8 @@
                     <input type="number" class="product-qty" value="1" min="1">
                 </div>
 
-                <button class="buy-button" onclick="openOrderModal(this, 'حقيبة ظهر مدرسية', 25000)">
-                    اطلب عبر واتساب 💬
+                <button class="buy-button" onclick="addToCart(this, 'حقيبة ظهر مدرسية', 25000)">
+                    إضافة إلى السلة 🛒
                 </button>
             </div>
 
@@ -508,8 +489,8 @@
                     <input type="number" class="product-qty" value="1" min="1">
                 </div>
 
-                <button class="buy-button" onclick="openOrderModal(this, 'طقم دفاتر جامعية', 10000)">
-                    اطلب عبر واتساب 💬
+                <button class="buy-button" onclick="addToCart(this, 'طقم دفاتر جامعية', 10000)">
+                    إضافة إلى السلة 🛒
                 </button>
             </div>
 
@@ -533,8 +514,8 @@
                     <input type="number" class="product-qty" value="1" min="1">
                 </div>
 
-                <button class="buy-button" onclick="openOrderModal(this, 'iPad Air 2024', 780000)">
-                    اطلب عبر واتساب 💬
+                <button class="buy-button" onclick="addToCart(this, 'iPad Air 2024', 780000)">
+                    إضافة إلى السلة 🛒
                 </button>
             </div>
 
@@ -558,8 +539,8 @@
                     <input type="number" class="product-qty" value="1" min="1">
                 </div>
 
-                <button class="buy-button" onclick="openOrderModal(this, 'iPhone 15 Pro Max', 1450000)">
-                    اطلب عبر واتساب 💬
+                <button class="buy-button" onclick="addToCart(this, 'iPhone 15 Pro Max', 1450000)">
+                    إضافة إلى السلة 🛒
                 </button>
             </div>
 
@@ -582,8 +563,8 @@
                     <input type="number" class="product-qty" value="1" min="1">
                 </div>
 
-                <button class="buy-button" onclick="openOrderModal(this, 'iPad 9th مستعمل', 320000)">
-                    اطلب عبر واتساب 💬
+                <button class="buy-button" onclick="addToCart(this, 'iPad 9th مستعمل', 320000)">
+                    إضافة إلى السلة 🛒
                 </button>
             </div>
 
@@ -606,32 +587,29 @@
                     <input type="number" class="product-qty" value="1" min="1">
                 </div>
 
-                <button class="buy-button" onclick="openOrderModal(this, 'سماعة بلوتوث RANDER', 35000)">
-                    اطلب عبر واتساب 💬
+                <button class="buy-button" onclick="addToCart(this, 'سماعة بلوتوث RANDER', 35000)">
+                    إضافة إلى السلة 🛒
                 </button>
             </div>
 
         </div>
     </main>
 
-    <!-- نافذة إدخال بيانات الطلب (Modal) -->
-    <div id="order-modal" class="modal-overlay">
+    <!-- نافذة استعراض محتويات السلة -->
+    <div id="cart-modal" class="modal-overlay">
         <div class="modal-card">
-            <div class="modal-title">إكمال الطلب</div>
-            <form id="order-form" onsubmit="handleFormSubmit(event)">
-                <div class="form-group">
-                    <label for="cust-name">الاسم الكامل</label>
-                    <input type="text" id="cust-name" class="form-input" placeholder="أدخل اسمك هنا..." required>
-                </div>
-                <div class="form-group">
-                    <label for="cust-address">العنوان (المحافظة / المنطقة)</label>
-                    <input type="text" id="cust-address" class="form-input" placeholder="مثال: بغداد / الكرادة" required>
-                </div>
-                <div class="modal-actions">
-                    <button type="submit" class="btn-submit">تأكيد وإرسال 🚀</button>
-                    <button type="button" class="btn-cancel" onclick="closeOrderModal()">إلغاء</button>
-                </div>
-            </form>
+            <div class="modal-title">🛒 محتويات سلة المشتريات</div>
+            <div id="cart-items-list">
+                <!-- سيتم عرض المنتجات هنا -->
+            </div>
+            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; font-weight: bold;">
+                <span>المجموع الكلي:</span>
+                <span id="cart-total-price">0 د.ع</span>
+            </div>
+            <div class="modal-actions" style="margin-top: 15px;">
+                <button class="btn-submit" onclick="sendAllCartToWhatsApp()">إرسال الطلب عبر واتساب 💬</button>
+                <button class="btn-cancel" onclick="closeCartModal()">إغلاق</button>
+            </div>
         </div>
     </div>
 
@@ -644,7 +622,7 @@
         </div>
     </div>
 
-    <!-- شريط الملاحة السفلي التفاعلي -->
+    <!-- شريط الملاحة السفلي -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="navGoHome(this)">
             <span>🏠</span>الرئيسية
@@ -661,17 +639,16 @@
     </nav>
 
     <script>  
-        var totalCartCount = 0;
-        var currentOrderData = null;
+        var cartArray = [];
 
-        // التبديل بين أزرار الملاحة السفلي
+        // إضاءة الزر النشط في الأسفل
         function setActiveNav(btnElement) {
             var items = document.querySelectorAll('.nav-item');
             items.forEach(function(item) { item.classList.remove('active'); });
-            btnElement.classList.add('active');
+            if (btnElement) btnElement.classList.add('active');
         }
 
-        // 1. زر الرئيسية
+        // أزرار الملاحة السفلي
         function navGoHome(btnElement) {
             setActiveNav(btnElement);
             document.getElementById('search-box').style.display = 'none';
@@ -679,14 +656,11 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 2. زر الأقسام
         function navGoCategories(btnElement) {
             setActiveNav(btnElement);
-            var catBar = document.getElementById('categories-bar');
-            catBar.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('categories-bar').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // 3. زر البحث
         function navToggleSearch(btnElement) {
             setActiveNav(btnElement);
             var searchBox = document.getElementById('search-box');
@@ -698,13 +672,7 @@
             }
         }
 
-        // 4. زر السلة
-        function navGoCart(btnElement) {
-            setActiveNav(btnElement);
-            alert("🛒 لديك حالياً " + totalCartCount + " منتجات في السلة.\nلإكمال الطلب اضغط على 'اطلب عبر واتساب' تحت أي منتج.");
-        }
-
-        // البحث التفاعلي في المنتجات
+        // البحث الفوري
         function searchProducts() {
             var query = document.getElementById('search-input').value.toLowerCase().trim();
             var cards = document.querySelectorAll('.product-card');
@@ -719,7 +687,7 @@
             });
         }
 
-        // دالة التصفية حسب الأقسام
+        // تصفية الأقسام
         function filterCategory(categoryName, btnElement) {
             var buttons = document.querySelectorAll('.category-chip');
             buttons.forEach(function(btn) { btn.classList.remove('active'); });
@@ -740,7 +708,8 @@
             }
         }
 
-        function openOrderModal(buttonElement, productName, unitPrice) {
+        // إدارة السلة
+        function addToCart(buttonElement, productName, unitPrice) {
             var productCard = buttonElement.closest('.product-card');
             var optionSelect = productCard.querySelector('.product-option');
             var selectedOption = optionSelect ? optionSelect.value : "قياسي";
@@ -748,53 +717,111 @@
             var qtyInput = productCard.querySelector('.product-qty');
             var quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
 
-            currentOrderData = {
-                productName: productName,
-                unitPrice: unitPrice,
-                selectedOption: selectedOption,
-                quantity: quantity
-            };
+            cartArray.push({
+                name: productName,
+                price: unitPrice,
+                option: selectedOption,
+                qty: quantity
+            });
 
-            document.getElementById('order-modal').style.display = 'flex';
-            document.getElementById('cust-name').focus();
+            updateCartCounter();
+            alert("✅ تم إضافة (" + productName + ") إلى السلة بنجاح!");
         }
 
-        function closeOrderModal() {
-            document.getElementById('order-modal').style.display = 'none';
-            document.getElementById('order-form').reset();
-            currentOrderData = null;
+        function updateCartCounter() {
+            var totalQty = cartArray.reduce(function(sum, item) { return sum + item.qty; }, 0);
+            document.getElementById('cart-counter').innerText = "🛒 السلة (" + totalQty + ")";
         }
 
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            if (!currentOrderData) return;
+        function navGoCart(btnElement) {
+            if (btnElement) setActiveNav(btnElement);
+            
+            var container = document.getElementById('cart-items-list');
+            var totalPriceEl = document.getElementById('cart-total-price');
+            
+            if (cartArray.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary);">سلتك فارغة حالياً 🛍️</div>';
+                totalPriceEl.innerText = '0 د.ع';
+            } else {
+                var html = '';
+                var grandTotal = 0;
+                
+                cartArray.forEach(function(item, index) {
+                    var itemTotal = item.price * item.qty;
+                    grandTotal += itemTotal;
+                    html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">' +
+                                '<div>' +
+                                    '<div style="font-weight:bold; font-size:14px;">' + item.name + '</div>' +
+                                    '<div style="font-size:12px; color:var(--text-secondary);">' + item.option + ' | العدد: ' + item.qty + '</div>' +
+                                '</div>' +
+                                '<div style="text-align:left;">' +
+                                    '<div style="font-weight:bold; color:var(--accent);">' + itemTotal.toLocaleString('ar-IQ') + ' د.ع</div>' +
+                                    '<button onclick="removeFromCart(' + index + ')" style="background:none; border:none; color:#ef4444; font-size:11px; cursor:pointer;">حذف 🗑️</button>' +
+                                '</div>' +
+                            '</div>';
+                });
+                
+                container.innerHTML = html;
+                totalPriceEl.innerText = grandTotal.toLocaleString('ar-IQ') + " د.ع";
+            }
 
-            var customerName = document.getElementById('cust-name').value.trim();
-            var customerAddress = document.getElementById('cust-address').value.trim();
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
 
-            if (!customerName || !customerAddress) return;
+        function scrollToCart() {
+            navGoCart(null);
+        }
+
+        function closeCartModal() {
+            document.getElementById('cart-modal').style.display = 'none';
+        }
+
+        function removeFromCart(index) {
+            cartArray.splice(index, 1);
+            updateCartCounter();
+            navGoCart(null);
+        }
+
+        function sendAllCartToWhatsApp() {
+            if (cartArray.length === 0) {
+                alert("السلة فارغة!");
+                return;
+            }
+
+            var customerName = prompt("من فضلك اكتب اسمك الكامل:");
+            var customerAddress = prompt("من فضلك اكتب عنوانك (المحافظة / المنطقة):");
+
+            if (!customerName || !customerAddress) {
+                alert("يرجى كتابة الاسم والعنوان لإكمال الطلب!");
+                return;
+            }
 
             var phoneNumber = "9647862253180";
-            var totalPrice = currentOrderData.unitPrice * currentOrderData.quantity;
-            var formattedTotal = totalPrice.toLocaleString('ar-IQ') + " د.ع";
+            var message = "مرحباً، أريد طلب المنتجات التالية من السلة:\n\n";
+            var grandTotal = 0;
 
-            totalCartCount += currentOrderData.quantity;
-            document.getElementById('cart-counter').innerText = "🛒 السلة (" + totalCartCount + ")";
+            cartArray.forEach(function(item, i) {
+                var itemTotal = item.price * item.qty;
+                grandTotal += itemTotal;
+                message += (i + 1) + ". " + item.name + "\n" +
+                           "   الخيار: " + item.option + "\n" +
+                           "   الكمية: " + item.qty + "\n" +
+                           "   السعر: " + itemTotal.toLocaleString('ar-IQ') + " د.ع\n------------------\n";
+            });
 
-            var message = "مرحباً، أريد طلب المنتج التالي:\n" +
-                          "📦 المنتج: " + currentOrderData.productName + "\n" +
-                          "📏 الخيار: " + currentOrderData.selectedOption + "\n" +
-                          "🔢 الكمية: " + currentOrderData.quantity + "\n" +
-                          "💰 المجموع الكلي: " + formattedTotal + "\n" +
-                          "👤 اسم الزبون: " + customerName + "\n" +
-                          "📍 العنوان: " + customerAddress;
+            message += "\n💰 المجموع الكلي: " + grandTotal.toLocaleString('ar-IQ') + " د.ع" +
+                       "\n👤 اسم الزبون: " + customerName +
+                       "\n📍 العنوان: " + customerAddress;
 
             var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
             window.open(url, '_blank');
 
-            closeOrderModal();
+            cartArray = [];
+            updateCartCounter();
+            closeCartModal();
         }
 
+        // التعامل مع الوضع أونلاين وأوفلاين
         window.addEventListener('offline', function() {
             document.getElementById('offline-banner').style.display = 'block';
         });
