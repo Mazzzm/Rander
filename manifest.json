@@ -2,24 +2,26 @@
   "short_name": "Rander",
   "name": "متجر راندر | Rander Store",
   "description": "متجر راندر الإلكتروني لبيع الحقائب المدرسية والمستلزمات بأفضل الأسعار - Rander Online Store",
+  "dir": "rtl",
+  "lang": "ar",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#1d4ed8",
   "icons": [
     {
       "src": "https://i.ibb.co/gbJ164z5/IMG-1613.jpg",
       "sizes": "192x192",
       "type": "image/jpeg",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "https://i.ibb.co/gbJ164z5/IMG-1613.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
-  ],
-  "start_url": "./index.html",
-  "background_color": "#ffffff",
-  "theme_color": "#1d4ed8",
-  "display": "standalone",
-  "orientation": "portrait",
-  "lang": "ar"
+  ]
 }
