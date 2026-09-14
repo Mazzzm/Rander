@@ -524,6 +524,24 @@
                 <button class="buy-button" onclick="addToCart(this, 'حقيبة ظهر مدرسية', 25000)">إضافة إلى السلة 🛒</button>
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'حقيبة ظهر مدرسية', 25000)">شراء سريع ⚡</button>
             </div>
+            <div class="product-card" data-id="p1" data-category="english">
+                <span class="badge">🔥 الأكثر مبيعاً</span>
+                <button class="fav-btn" onclick="toggleFavorite('p1', this)">🤍</button>
+                <img src="https://via.placeholder.com/250?text=حقيبة+مدرسية" class="product-image" onclick="openProductDetail('p1')">
+                <div class="product-title">حقيبة ظهر مدرسية مقاومة للماء</div>
+                <div class="stars-rating" onclick="openReviewsModal('حقيبة ظهر مدرسية')">⭐️⭐️⭐️⭐️⭐️ (12)</div>
+                <div class="product-price">25,000 د.ع</div>
+                <div class="control-group">
+                    <label>اللون:</label>
+                    <select class="product-option"><option value="أسود">أسود</option><option value="كحلي">كحلي</option></select>
+                </div>
+                <div class="control-group">
+                    <label>الكمية:</label>
+                    <input type="number" class="product-qty" value="1" min="1">
+                </div>
+                <button class="buy-button" onclick="addToCart(this, 'حقيبة ظهر مدرسية', 25000)">إضافة إلى السلة 🛒</button>
+                <button class="quick-buy-btn" onclick="quickBuy(this, 'حقيبة ظهر مدرسية', 25000)">شراء سريع ⚡</button>
+            </div>
 
             <div class="product-card" data-id="p2" data-category="ipads">
                 <span class="badge">💥 خصم</span>
