@@ -301,7 +301,7 @@
             border-radius: 16px;
             padding: 20px;
             width: 100%;
-            max-width: 440px;
+            max-width: 460px;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
@@ -319,7 +319,6 @@
             font-size: 13px;
         }
 
-        /* تحسين أزرار التحكم بالكمية بالعرض */
         .cart-qty-control {
             display: flex;
             align-items: center;
@@ -375,10 +374,7 @@
             z-index: 900;
         }
 
-        .wheel-container {
-            text-align: center;
-            padding: 10px;
-        }
+        .wheel-container { text-align: center; padding: 10px; }
 
         .wheel-box {
             width: 200px;
@@ -420,6 +416,71 @@
         }
 
         .nav-item.active { color: var(--accent); }
+
+        /* معرض صور المنتج في النافذة */
+        .gallery-main-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .gallery-thumbs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .gallery-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .gallery-thumb.active { border-color: var(--accent); }
+
+        /* المنتجات المقترحة داخل النافذة */
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .rec-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .rec-card img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .rec-card-title {
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rec-card-price {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -445,15 +506,15 @@
         <p>التسوق الإلكتروني الأسرع والأذكى في العراق</p>
     </section>
 
-    <!-- البحث الصوتي -->
+    <!-- البحث الصوتي والكتابي المحدث -->
     <div class="search-container" id="search-box">
         <div class="search-wrapper">
-            <input type="text" id="search-input" class="search-input" placeholder="🔍 ابحث عن منتج..." oninput="searchProducts()">
+            <input type="text" id="search-input" class="search-input" placeholder="🔍 اكتب اسم المنتج للبحث..." oninput="searchProducts()">
             <button class="voice-btn" onclick="startVoiceSearch()" title="بحث صوتي">🎙️</button>
         </div>
     </div>
 
-    <!-- الأقسام المحدثة -->
+    <!-- الأقسام -->
     <div class="categories-section" id="categories-bar">
         <div class="categories-container">
             <button class="category-chip active" onclick="filterCategory('all', this)">✨ الكل</button>
@@ -467,15 +528,21 @@
         </div>
     </div>
 
-    <main class="products-section">
+    <main class="products-section" id="products-section">
         <h2 class="section-title" id="section-heading">جميع المنتجات</h2>
+        
+        <!-- رسالة عدم وجود نتائج -->
+        <div id="no-results" style="display:none; text-align:center; padding:40px 10px; color:var(--text-secondary);">
+            <h3>❌ لا توجد منتجات تطابق بحثك</h3>
+            <p style="font-size:13px; margin-top:5px;">جرّب البحث باسم منتج آخر أو اختر أحد الأقسام أعلاه.</p>
+        </div>
+
         <div class="products-grid" id="main-products-grid">
             
-            <!-- مستلزمات مدرسية -->
             <div class="product-card" data-id="p1" data-category="school">
                 <span class="badge">🔥 الأكثر مبيعاً</span>
                 <button class="fav-btn" onclick="toggleFavorite('p1', this)">🤍</button>
-                <img src="https://via.placeholder.com/250?text=حقيبة+مدرسية" class="product-image" onclick="openProductDetail('p1', 'حقيبة ظهر مدرسية', 25000, 'حقيبة ظهر فائقة الجودة مقاومة للماء مع منفذ USB للشحن.')">
+                <img src="https://via.placeholder.com/250?text=حقيبة+مدرسية" class="product-image" onclick="openProductDetail('p1')">
                 <div class="product-title">حقيبة ظهر مدرسية مقاومة للماء</div>
                 <div class="stars-rating" onclick="openReviewsModal('حقيبة ظهر مدرسية')">⭐️⭐️⭐️⭐️⭐️ (12)</div>
                 <div class="product-price">25,000 د.ع</div>
@@ -491,11 +558,10 @@
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'حقيبة ظهر مدرسية', 25000)">شراء سريع ⚡</button>
             </div>
 
-            <!-- ايبادات -->
             <div class="product-card" data-id="p2" data-category="ipads">
                 <span class="badge">💥 خصم</span>
                 <button class="fav-btn" onclick="toggleFavorite('p2', this)">🤍</button>
-                <img src="https://via.placeholder.com/250?text=iPad+Air" class="product-image" onclick="openProductDetail('p2', 'iPad Air 2024', 780000, 'جهاز ايباد اير أصلية بشاشة Retina فائقة الدقة.')">
+                <img src="https://via.placeholder.com/250?text=iPad+Air" class="product-image" onclick="openProductDetail('p2')">
                 <div class="product-title">iPad Air (2024)</div>
                 <div class="stars-rating" onclick="openReviewsModal('iPad Air 2024')">⭐️⭐️⭐️⭐️☆ (8)</div>
                 <div class="product-price">780,000 د.ع</div>
@@ -511,11 +577,10 @@
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'iPad Air 2024', 780000)">شراء سريع ⚡</button>
             </div>
 
-            <!-- هواتف -->
             <div class="product-card" data-id="p3" data-category="phones">
                 <span class="badge">✨ جديد</span>
                 <button class="fav-btn" onclick="toggleFavorite('p3', this)">🤍</button>
-                <img src="https://via.placeholder.com/250?text=iPhone+15" class="product-image" onclick="openProductDetail('p3', 'iPhone 15 Pro Max', 1450000, 'هاتف ايفون 15 بروماكس الجديد كلياً بهيكل من التيتانيوم.')">
+                <img src="https://via.placeholder.com/250?text=iPhone+15" class="product-image" onclick="openProductDetail('p3')">
                 <div class="product-title">iPhone 15 Pro Max</div>
                 <div class="stars-rating" onclick="openReviewsModal('iPhone 15 Pro Max')">⭐️⭐️⭐️⭐️⭐️ (19)</div>
                 <div class="product-price">1,450,000 د.ع</div>
@@ -531,11 +596,10 @@
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'iPhone 15 Pro Max', 1450000)">شراء سريع ⚡</button>
             </div>
 
-            <!-- أجهزة مستعملة -->
             <div class="product-card" data-id="p4" data-category="used">
                 <span class="badge" style="background:#8b5cf6;">♻️ نظيف جداً</span>
                 <button class="fav-btn" onclick="toggleFavorite('p4', this)">🤍</button>
-                <img src="https://via.placeholder.com/250?text=iPhone+13+Used" class="product-image" onclick="openProductDetail('p4', 'iPhone 13 مستعمل (درجة أولى)', 620000, 'جهاز ايفون 13 مستعمل بحالة الزيرو، نسبة البطارية 88% بدون أي تصليح.')">
+                <img src="https://via.placeholder.com/250?text=iPhone+13+Used" class="product-image" onclick="openProductDetail('p4')">
                 <div class="product-title">iPhone 13 مستعمل (درجة أولى)</div>
                 <div class="stars-rating" onclick="openReviewsModal('iPhone 13 مستعمل')">⭐️⭐️⭐️⭐️☆ (5)</div>
                 <div class="product-price">620,000 د.ع</div>
@@ -551,10 +615,9 @@
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'iPhone 13 مستعمل', 620000)">شراء سريع ⚡</button>
             </div>
 
-            <!-- ساعات ذكية -->
             <div class="product-card" data-id="p5" data-category="watches">
                 <button class="fav-btn" onclick="toggleFavorite('p5', this)">🤍</button>
-                <img src="https://via.placeholder.com/250?text=Smart+Watch" class="product-image" onclick="openProductDetail('p5', 'ساعة ذكية Ultra 2', 45000, 'ساعة ذكية شبيهة بآبل الترا تدعم الاتصالات وقياس النبض.')">
+                <img src="https://via.placeholder.com/250?text=Smart+Watch" class="product-image" onclick="openProductDetail('p5')">
                 <div class="product-title">ساعة ذكية Ultra 2 ذكية</div>
                 <div class="stars-rating" onclick="openReviewsModal('ساعة ذكية Ultra 2')">⭐️⭐️⭐️⭐️⭐️ (15)</div>
                 <div class="product-price">45,000 د.ع</div>
@@ -570,11 +633,10 @@
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'ساعة ذكية Ultra 2', 45000)">شراء سريع ⚡</button>
             </div>
 
-            <!-- ألعاب وقيمنق -->
             <div class="product-card" data-id="p6" data-category="gaming">
                 <span class="badge" style="background:#10b981;">🎮 القيمنق</span>
                 <button class="fav-btn" onclick="toggleFavorite('p6', this)">🤍</button>
-                <img src="https://via.placeholder.com/250?text=PS5+Controller" class="product-image" onclick="openProductDetail('p6', 'يد تحكم PS5 DualSense', 95000, 'يد تحكم بلايستيشن 5 الأصلية مع دعم الاهتزاز التفاعلي.')">
+                <img src="https://via.placeholder.com/250?text=PS5+Controller" class="product-image" onclick="openProductDetail('p6')">
                 <div class="product-title">يد تحكم بلايستيشن PS5</div>
                 <div class="stars-rating" onclick="openReviewsModal('يد تحكم PS5')">⭐️⭐️⭐️⭐️⭐️ (22)</div>
                 <div class="product-price">95,000 د.ع</div>
@@ -590,10 +652,9 @@
                 <button class="quick-buy-btn" onclick="quickBuy(this, 'يد تحكم PS5', 95000)">شراء سريع ⚡</button>
             </div>
 
-            <!-- إكسسوارات -->
             <div class="product-card" data-id="p7" data-category="accessories">
                 <button class="fav-btn" onclick="toggleFavorite('p7', this)">🤍</button>
-                <img src="https://via.placeholder.com/250?text=AirPods" class="product-image" onclick="openProductDetail('p7', 'سماعة بلوتوث RANDER', 35000, 'سماعة بلوتوث لاسلكية عازلة للضوضاء وصوت مجسم.')">
+                <img src="https://via.placeholder.com/250?text=AirPods" class="product-image" onclick="openProductDetail('p7')">
                 <div class="product-title">سماعة بلوتوث لاسلكية RANDER</div>
                 <div class="stars-rating" onclick="openReviewsModal('سماعة بلوتوث RANDER')">⭐️⭐️⭐️⭐️☆ (10)</div>
                 <div class="product-price">35,000 د.ع</div>
@@ -623,21 +684,26 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل المنتج -->
+    <!-- نافذة تفاصيل المنتج المحدثة بالكامل مع معرض صور والمنتجات المقترحة -->
     <div id="detail-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3 id="detail-title" style="margin-bottom:8px;"></h3>
-            <p id="detail-desc" style="font-size:13px; color:var(--text-secondary); margin-bottom:15px;"></p>
-            <div style="font-weight:bold; color:var(--accent); margin-bottom:15px;" id="detail-price"></div>
-            
-            <hr style="border-color:var(--border-color); margin:15px 0;">
-            <h4 style="font-size:13px; margin-bottom:8px;">🤖 منتجات مقترحة قد تعجبك:</h4>
-            <div id="ai-recommendations" style="font-size:12px; color:var(--text-secondary);">
-                • شاحن سريع 65W متوافق <br>
-                • باكة حماية كاملة للشاشة
-            </div>
+            <!-- معرض الصور -->
+            <img id="detail-main-img" class="gallery-main-img" src="" alt="صورة المنتج">
+            <div class="gallery-thumbs" id="detail-thumbs"></div>
 
-            <button onclick="closeDetailModal()" style="margin-top:20px; background:var(--accent); color:white; border:none; padding:10px; border-radius:8px; width:100%; font-weight:bold; cursor:pointer;">إغلاق</button>
+            <h3 id="detail-title" style="margin-bottom:4px;"></h3>
+            <div id="detail-price" style="font-weight:bold; color:var(--accent); font-size:18px; margin-bottom:10px;"></div>
+            <p id="detail-desc" style="font-size:13px; color:var(--text-secondary); margin-bottom:15px; line-height:1.5;"></p>
+            
+            <button id="detail-add-btn" class="buy-button" style="margin-bottom:8px;">إضافة إلى السلة 🛒</button>
+
+            <hr style="border-color:var(--border-color); margin:18px 0;">
+            
+            <!-- منتجات مقترحة قابلة للنقر -->
+            <h4 style="font-size:14px; margin-bottom:6px;">🛍️ منتجات أخرى قد تعجبك:</h4>
+            <div class="rec-grid" id="detail-recommendations"></div>
+
+            <button onclick="closeDetailModal()" style="margin-top:18px; background:var(--bg-primary); border:1px solid var(--border-color); color:var(--text-primary); padding:10px; border-radius:8px; width:100%; font-weight:bold; cursor:pointer;">إغلاق التفاصيل</button>
         </div>
     </div>
 
@@ -658,7 +724,7 @@
         </div>
     </div>
 
-    <!-- نافذة السلة الشاملة (مع زر الإغلاق الدائم والتحكم بالعرض) -->
+    <!-- نافذة السلة الشاملة -->
     <div id="cart-modal" class="modal-overlay" onclick="closeCartOnOutsideClick(event)">
         <div class="modal-card">
             <h3 style="text-align:center; margin-bottom:15px;">🛒 سلة المشتريات</h3>
@@ -696,7 +762,6 @@
                 <button class="buy-button" style="margin-top:12px;" onclick="sendAllCartToWhatsApp()">تأكيد وإرسال الطلب 💬</button>
             </div>
 
-            <!-- زر إغلاق دائم موحد لجميع الحالات -->
             <button onclick="closeCartModal()" style="margin-top:12px; background:var(--bg-primary); border:1px solid var(--border-color); color:var(--text-primary); padding:10px; border-radius:10px; width:100%; font-weight:bold; cursor:pointer;">إغلاق السلة</button>
         </div>
     </div>
@@ -711,6 +776,45 @@
     </nav>
 
     <script>
+        // قاعدة بيانات كاملة للمنتجات
+        var productsData = {
+            'p1': {
+                id: 'p1', name: 'حقيبة ظهر مدرسية مقاومة للماء', price: 25000,
+                desc: 'حقيبة ظهر فائقة الجودة ذات جيوب متعددة ومقاومة للماء بالكامل، مزودة بمنفذ USB خارجي لشحن الهواتف، ومناسبة للمدرسة والجامعة.',
+                images: ['https://via.placeholder.com/400?text=حقيبة+مدرسية+1', 'https://via.placeholder.com/400?text=حقيبة+مدرسية+2', 'https://via.placeholder.com/400?text=حقيبة+مدرسية+3']
+            },
+            'p2': {
+                id: 'p2', name: 'iPad Air (2024)', price: 780000,
+                desc: 'جهاز ايباد اير أصلية بشاشة Retina فائقة الدقة وأداء سريع جداً مع معالج M2 وشحن سريع ودعم القلم واللوحة الذكية.',
+                images: ['https://via.placeholder.com/400?text=iPad+Air+1', 'https://via.placeholder.com/400?text=iPad+Air+2']
+            },
+            'p3': {
+                id: 'p3', name: 'iPhone 15 Pro Max', price: 1450000,
+                desc: 'هاتف ايفون 15 بروماكس الجديد كلياً بهيكل متين من التيتانيوم، كاميرا 48 ميجابكسل تقريب 5X، وبطارية تدوم طوال اليوم.',
+                images: ['https://via.placeholder.com/400?text=iPhone+15+1', 'https://via.placeholder.com/400?text=iPhone+15+2']
+            },
+            'p4': {
+                id: 'p4', name: 'iPhone 13 مستعمل (درجة أولى)', price: 620000,
+                desc: 'جهاز ايفون 13 مستعمل بحالة الزيرو، نسبة البطارية 88% بدون أي صيانة أو تغيير أجزاء، مع ضمان فحص أسبوع كامل.',
+                images: ['https://via.placeholder.com/400?text=iPhone+13+Used+1', 'https://via.placeholder.com/400?text=iPhone+13+Used+2']
+            },
+            'p5': {
+                id: 'p5', name: 'ساعة ذكية Ultra 2 ذكية', price: 45000,
+                desc: 'ساعة ذكية شبيهة بآبل الترا تدعم إجراء واستقبال المكالمات، وقياس نبضات القلب والأوكسجين، ومقاومة للماء.',
+                images: ['https://via.placeholder.com/400?text=Smart+Watch+1', 'https://via.placeholder.com/400?text=Smart+Watch+2']
+            },
+            'p6': {
+                id: 'p6', name: 'يد تحكم بلايستيشن PS5', price: 95000,
+                desc: 'يد تحكم DualSense الأصلية لجهاز بلايستيشن 5 مع تقنية الاهتزاز التفاعلي وميكروفون مدمج.',
+                images: ['https://via.placeholder.com/400?text=PS5+Controller+1', 'https://via.placeholder.com/400?text=PS5+Controller+2']
+            },
+            'p7': {
+                id: 'p7', name: 'سماعة بلوتوث لاسلكية RANDER', price: 35000,
+                desc: 'سماعة بلوتوث لاسلكية مع خاصية عزل الضوضاء، صوت مجسم النقاء، وبطارية تعمل لمدة 24 ساعة مع علبة الشحن.',
+                images: ['https://via.placeholder.com/400?text=AirPods+1', 'https://via.placeholder.com/400?text=AirPods+2']
+            }
+        };
+
         var cartArray = JSON.parse(localStorage.getItem('rander_cart')) || [];
         var favoritesArray = JSON.parse(localStorage.getItem('rander_favs')) || [];
         var appliedDiscount = 0;
@@ -745,6 +849,7 @@
             setTimeout(function() { toast.style.display = 'none'; }, 2000);
         }
 
+        /* إصلاح البحث الصوتي وانتقال الشاشة */
         function startVoiceSearch() {
             if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                 var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -762,6 +867,99 @@
             }
         }
 
+        /* الكود المصلح للبحث لضمان التنقل لنتائج البحث */
+        function searchProducts() {
+            var query = document.getElementById('search-input').value.toLowerCase().trim();
+            var visibleCount = 0;
+
+            document.querySelectorAll('.product-card').forEach(function(card) {
+                var title = card.querySelector('.product-title').innerText.toLowerCase();
+                if (title.includes(query)) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // إظهار تنبيه عدم وجود نتائج إذا كان البحث فارغاً
+            var noResults = document.getElementById('no-results');
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+                // التمرير التلقائي نحو المنتجات لرؤية النتيجة
+                document.getElementById('products-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        /* عرض التفاصيل + صور متعددة + اقتراح منتجات قابلة للنقر */
+        function openProductDetail(pId) {
+            var product = productsData[pId];
+            if (!product) return;
+
+            document.getElementById('detail-title').innerText = product.name;
+            document.getElementById('detail-price').innerText = product.price.toLocaleString('ar-IQ') + " د.ع";
+            document.getElementById('detail-desc').innerText = product.desc;
+            
+            // الصورة الرئيسية ومعرض الصور المصغرة
+            var mainImg = document.getElementById('detail-main-img');
+            mainImg.src = product.images[0];
+
+            var thumbsContainer = document.getElementById('detail-thumbs');
+            thumbsContainer.innerHTML = '';
+            product.images.forEach(function(imgSrc, idx) {
+                var thumb = document.createElement('img');
+                thumb.src = imgSrc;
+                thumb.className = 'gallery-thumb' + (idx === 0 ? ' active' : '');
+                thumb.onclick = function() {
+                    mainImg.src = imgSrc;
+                    document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+                    thumb.classList.add('active');
+                };
+                thumbsContainer.appendChild(thumb);
+            });
+
+            // ربط زر الإضافة بالسلة
+            var addBtn = document.getElementById('detail-add-btn');
+            addBtn.onclick = function() {
+                addToCartDirect(product.name, product.price);
+                closeDetailModal();
+            };
+
+            // بناء المنتجات المقترحة (منتجات أخرى في المتجر)
+            var recContainer = document.getElementById('detail-recommendations');
+            recContainer.innerHTML = '';
+            
+            Object.keys(productsData).forEach(function(key) {
+                if (key !== pId) {
+                    var otherProduct = productsData[key];
+                    var itemCard = document.createElement('div');
+                    itemCard.className = 'rec-card';
+                    itemCard.onclick = function() {
+                        openProductDetail(otherProduct.id);
+                    };
+                    itemCard.innerHTML = '<img src="' + otherProduct.images[0] + '">' +
+                                         '<div class="rec-card-title">' + otherProduct.name + '</div>' +
+                                         '<div class="rec-card-price">' + otherProduct.price.toLocaleString('ar-IQ') + ' د.ع</div>';
+                    recContainer.appendChild(itemCard);
+                }
+            });
+
+            document.getElementById('detail-modal').style.display = 'flex';
+        }
+
+        function closeDetailModal() { document.getElementById('detail-modal').style.display = 'none'; }
+
+        function addToCartDirect(productName, unitPrice) {
+            var existingItem = cartArray.find(function(item) { return item.name === productName; });
+            if (existingItem) { existingItem.qty += 1; } 
+            else { cartArray.push({ name: productName, price: unitPrice, option: "قياسي", qty: 1 }); }
+
+            saveCartToStorage();
+            showToast("🛒 تم الإضافة للسلة!");
+        }
+
         function openWheelModal() { document.getElementById('wheel-modal').style.display = 'flex'; }
         function closeWheelModal() { document.getElementById('wheel-modal').style.display = 'none'; }
 
@@ -776,14 +974,6 @@
                 closeWheelModal();
             }, 3200);
         }
-
-        function openProductDetail(id, title, price, desc) {
-            document.getElementById('detail-title').innerText = title;
-            document.getElementById('detail-desc').innerText = desc;
-            document.getElementById('detail-price').innerText = price.toLocaleString('ar-IQ') + " د.ع";
-            document.getElementById('detail-modal').style.display = 'flex';
-        }
-        function closeDetailModal() { document.getElementById('detail-modal').style.display = 'none'; }
 
         function openReviewsModal(productTitle) {
             document.getElementById('reviews-product-title').innerText = "⭐️ تقييمات: " + productTitle;
@@ -811,6 +1001,7 @@
         function navGoHome(btnElement) {
             setActiveNav(btnElement);
             document.getElementById('search-box').style.display = 'none';
+            document.getElementById('no-results').style.display = 'none';
             filterCategory('all', document.querySelector('.category-chip'));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -856,15 +1047,8 @@
             });
         }
 
-        function searchProducts() {
-            var query = document.getElementById('search-input').value.toLowerCase().trim();
-            document.querySelectorAll('.product-card').forEach(function(card) {
-                var title = card.querySelector('.product-title').innerText.toLowerCase();
-                card.style.display = title.includes(query) ? 'flex' : 'none';
-            });
-        }
-
         function filterCategory(categoryName, btnElement) {
+            document.getElementById('no-results').style.display = 'none';
             document.querySelectorAll('.category-chip').forEach(function(btn) { btn.classList.remove('active'); });
             if (btnElement) btnElement.classList.add('active');
             document.querySelectorAll('.product-card').forEach(function(card) {
@@ -933,7 +1117,6 @@
                                 '<div style="font-size:11px; color:var(--text-secondary);">' + item.option + '</div>' +
                                 '<div style="font-weight:bold; color:var(--accent); font-size:12px; margin-top:2px;">' + (item.price * item.qty).toLocaleString('ar-IQ') + ' د.ع</div>' +
                             '</div>' +
-                            '<!-- تحكم أفقية بالعرض -->' +
                             '<div class="cart-qty-control">' +
                                 '<button class="cart-qty-btn" onclick="changeCartQty(' + index + ', -1)">-</button>' +
                                 '<span style="font-weight:bold; font-size:13px; min-width:18px; text-align:center;">' + item.qty + '</span>' +
