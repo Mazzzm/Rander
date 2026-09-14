@@ -480,7 +480,7 @@
     </header>
 
     <section class="hero">
-        <h1>متجر RANDER المتقدم</h1>
+        <h1>متجر RANDER </h1>
         <p>التسوق الإلكتروني الأسرع والأذكى في العراق</p>
     </section>
 
@@ -1124,5 +1124,56 @@
             window.open("https://wa.me/9647862253180?text=" + encodeURIComponent(message), '_blank');
         }
     </script>
+  // 1. تسجيل الـ Service Worker (مطلوب أساسي من المتصفح للتثبيت)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('Service Worker Registered'))
+      .catch((err) => console.log('SW Registration Failed:', err));
+  }
+
+  let deferredPrompt;
+  const installBtn = document.getElementById('installAppBtn');
+
+  // 2. التحقق مما إذا كان التطبيق مثبتاً بالفعل مسبقاً
+  const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+  if (!isAppInstalled) {
+    // إظهار الزر فقط إذا لم يكن التطبيق مثبتاً وتوفر حدث التثبيت
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBtn) {
+        installBtn.style.display = 'inline-block';
+      }
+    });
+  }
+
+  // 3. عند ضغط الزبون على الزر
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      if (outcome === 'accepted') {
+        console.log('تم تثبيت التطبيق');
+      }
+      
+      // إخفاء الزر فوراً بعد التثبيت أو الإلغاء
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+  }
+
+  // 4. إخفاء الزر تلقائياً فور إتمام التثبيت
+  window.addEventListener('appinstalled', () => {
+    if (installBtn) {
+      installBtn.style.display = 'none';
+    }
+    deferredPrompt = null;
+  });
+</script>
+
 </body>
 </html>
