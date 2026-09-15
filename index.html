@@ -1305,61 +1305,55 @@
             if (banner) banner.style.display = 'none';
         }
         
-       // 1. إنشاء مصفوفة لتتبع التصفح داخل التطبيق
-window.appNavigationStack = [];
-let backButtonPressedOnce = false;
+       // 1. إعداد دالة لتسجيل كل خطوة تصفح جديدة في سجل المتصفح الحقيقي
+window.addEventListener('load', function() {
+    // إعطاء حالة أصلية للرئيسية
+    history.replaceState({ depth: 0 }, '', '');
+});
 
-// 2. دالة لفتح أي نافذة/منتج مع تسجيله في السجل
-function openView(viewElement) {
-    if (viewElement) {
-        viewElement.classList.add('active', 'show');
-        if (viewElement.style) viewElement.style.display = 'block';
-        
-        // إضافته لمصفوفة التصفح وتسجيل حالة جديدة
-        window.appNavigationStack.push(viewElement);
-        history.pushState({ stackDepth: window.appNavigationStack.length }, '', '');
-    }
+let backPressTimer = null;
+
+// 2. مراقبة فتح المنتجات والنوافذ وتسجيلها فوراً كصفحة جديدة
+// أضف هذه الدالة واستدعيها في أي مكان تفتح فيه منتجاً أو نافذة
+function recordNavigationStep() {
+    let currentDepth = (history.state && history.state.depth) ? history.state.depth : 0;
+    history.pushState({ depth: currentDepth + 1 }, '', '');
 }
 
-// 3. مراقبة فتح العناصر تلقائياً (مثل المنتجات المقترحة والنوافذ)
-const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-            if (node.nodeType === 1 && (node.classList?.contains('modal') || node.classList?.contains('popup'))) {
-                openView(node);
-            }
-        });
-    });
-});
-observer.observe(document.body, { childList: true, subtree: true });
+// تعديل تلقائي لتسجيل الخطوات عند فتح النوافذ
+const originalPushState = history.pushState;
 
-// 4. التحكم المتقدم بزر الرجوع
+// 3. التحكم المستهدف بزر الرجوع
 window.addEventListener('popstate', function (event) {
-    // إذا كان هناك صفحة أو منتج سابق في مصفوفة التنقل
-    if (window.appNavigationStack.length > 0) {
-        // إزالة الشاشة الحالية فقط (آخر منتج تم فتحه)
-        const currentView = window.appNavigationStack.pop();
-        if (currentView) {
-            currentView.classList.remove('active', 'show');
-            if (currentView.style) currentView.style.display = 'none';
-        }
-        return; // العودة للمنتج/الصفحة السابقة بنجاح
+    // البحث عن جميع النوافذ المفتوحة حالياً
+    const openModals = document.querySelectorAll('.modal.active, .popup.show, [id*="modal"]:not([style*="display: none"])');
+    
+    // إذا كانت هناك نافذة مفتوحة (منتج أو سلة)
+    if (openModals.length > 0) {
+        // نغلق آخر نافذة تم فتحها فقط (الرجوع خطوة واحدة)
+        const lastOpenedModal = openModals[openModals.length - 1];
+        lastOpenedModal.classList.remove('active', 'show');
+        if (lastOpenedModal.style) lastOpenedModal.style.display = 'none';
+        
+        // إيقاف عملية الخروج لأننا رجعنا خطوة داخلية
+        return;
     }
 
-    // إذا فرغت القائمة وأصبح المستخدم في الصفحة الرئيسية تماماً
-    if (!backButtonPressedOnce) {
-        backButtonPressedOnce = true;
-        
+    // إذا لم تكن هناك أي نوافذ مفتوحة وكان المستخدم في الصفحة الرئيسية
+    if (!backPressTimer) {
+        // إظهار الإشعار
         showToast("اضغط مرة أخرى للخروج من التطبيق");
 
-        // منع الخروج في الضغطة الأولى
-        history.pushState(null, '', '');
+        // إعادة إضافة حالة لمنع الخروج بالضغطة الأولى
+        history.pushState({ depth: 0 }, '', '');
 
-        setTimeout(function () {
-            backButtonPressedOnce = false;
+        // مؤقت لمدة ثانتين للضغطة الثانية
+        backPressTimer = setTimeout(function () {
+            backPressTimer = null;
         }, 2000);
     } else {
-        // الخروج عند الضغط مرتين على الرئيسية
+        // إذا ضغط مرتين خلال ثانتين يتم الخروج
+        clearTimeout(backPressTimer);
         history.back();
     }
 });
