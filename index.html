@@ -1290,55 +1290,50 @@
             if (banner) banner.style.display = 'none';
         }
         
-       // 1. إعداد دالة لتسجيل كل خطوة تصفح جديدة في سجل المتصفح الحقيقي
-window.addEventListener('load', function() {
-    // إعطاء حالة أصلية للرئيسية
-    history.replaceState({ depth: 0 }, '', '');
-});
+       // 1. إنشاء قائمة بتتابع الشاشات المفتوحة
+window.navStack = window.navStack || [];
+let exitTimer = null;
 
-let backPressTimer = null;
-
-// 2. مراقبة فتح المنتجات والنوافذ وتسجيلها فوراً كصفحة جديدة
-// أضف هذه الدالة واستدعيها في أي مكان تفتح فيه منتجاً أو نافذة
+// دالة تسجيل الانتقال لشاشة/منتج جديد
 function recordNavigationStep() {
-    let currentDepth = (history.state && history.state.depth) ? history.state.depth : 0;
-    history.pushState({ depth: currentDepth + 1 }, '', '');
+    window.navStack.push('product-view');
+    history.pushState({ depth: window.navStack.length }, '', '');
 }
 
-// تعديل تلقائي لتسجيل الخطوات عند فتح النوافذ
-const originalPushState = history.pushState;
+// 2. التحكم بحدث زر الرجوع
+window.addEventListener('popstate', function (e) {
+    // التحقق من وجود نافذة مفتوحة حالياً (مثل تفاصيل المنتج أو السلة)
+    const modal = document.getElementById('detail-modal');
+    const isModalVisible = modal && (modal.classList.contains('active') || modal.style.display === 'flex' || modal.style.display === 'block');
 
-// 3. التحكم المستهدف بزر الرجوع
-window.addEventListener('popstate', function (event) {
-    // البحث عن جميع النوافذ المفتوحة حالياً
-    const openModals = document.querySelectorAll('.modal.active, .popup.show, [id*="modal"]:not([style*="display: none"])');
-    
-    // إذا كانت هناك نافذة مفتوحة (منتج أو سلة)
-    if (openModals.length > 0) {
-        // نغلق آخر نافذة تم فتحها فقط (الرجوع خطوة واحدة)
-        const lastOpenedModal = openModals[openModals.length - 1];
-        lastOpenedModal.classList.remove('active', 'show');
-        if (lastOpenedModal.style) lastOpenedModal.style.display = 'none';
-        
-        // إيقاف عملية الخروج لأننا رجعنا خطوة داخلية
-        return;
+    // أ) إذا كان المستخدم يتصفح منتجاً أو نافذة فرعية
+    if (isModalVisible || window.navStack.length > 0) {
+        // تفريغ آخر خطوة تصفح
+        window.navStack.pop();
+
+        // إغلاق نافذة التفاصيل العلوية فقط
+        if (typeof closeDetailModal === 'function') {
+            closeDetailModal();
+        } else if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+        }
+        return; // العودة خطوة للخلف دون الخروج
     }
 
-    // إذا لم تكن هناك أي نوافذ مفتوحة وكان المستخدم في الصفحة الرئيسية
-    if (!backPressTimer) {
-        // إظهار الإشعار
+    // ب) إذا كان المستخدم في الصفحة الرئيسية تماماً
+    if (!exitTimer) {
+        // الضغطة الأولى في الرئيسية: إظهار التنبيه وإعادة تثبيت الصفحة
         showToast("اضغط مرة أخرى للخروج من التطبيق");
+        history.pushState(null, '', '');
 
-        // إعادة إضافة حالة لمنع الخروج بالضغطة الأولى
-        history.pushState({ depth: 0 }, '', '');
-
-        // مؤقت لمدة ثانتين للضغطة الثانية
-        backPressTimer = setTimeout(function () {
-            backPressTimer = null;
+        // إعادة الضبط بعد ثانيتين
+        exitTimer = setTimeout(() => {
+            exitTimer = null;
         }, 2000);
     } else {
-        // إذا ضغط مرتين خلال ثانتين يتم الخروج
-        clearTimeout(backPressTimer);
+        // الضغطة الثانية خلال ثانيتين: الخروج الفعلي
+        clearTimeout(exitTimer);
         history.back();
     }
 });
