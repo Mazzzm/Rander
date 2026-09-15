@@ -1305,49 +1305,61 @@
             if (banner) banner.style.display = 'none';
         }
         
-       // 1. تثبيت حالة الصفحة الرئيسية
-if (!history.state) {
-    history.replaceState({ page: 'home' }, '', '');
-}
-
+       // 1. إنشاء مصفوفة لتتبع التصفح داخل التطبيق
+window.appNavigationStack = [];
 let backButtonPressedOnce = false;
 
-// 2. مراقبة فتح وإغلاق النوافذ المنبثقة تلقائياً وتسجيلها في السجل
-const observer = new MutationObserver(() => {
-    const activeModal = document.querySelector('.modal.active, .popup.show, .product-modal.show, [id*="modal"]:not([style*="display: none"])');
-    if (activeModal && history.state?.page !== 'modal-open') {
-        history.pushState({ page: 'modal-open' }, '', '');
+// 2. دالة لفتح أي نافذة/منتج مع تسجيله في السجل
+function openView(viewElement) {
+    if (viewElement) {
+        viewElement.classList.add('active', 'show');
+        if (viewElement.style) viewElement.style.display = 'block';
+        
+        // إضافته لمصفوفة التصفح وتسجيل حالة جديدة
+        window.appNavigationStack.push(viewElement);
+        history.pushState({ stackDepth: window.appNavigationStack.length }, '', '');
     }
+}
+
+// 3. مراقبة فتح العناصر تلقائياً (مثل المنتجات المقترحة والنوافذ)
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1 && (node.classList?.contains('modal') || node.classList?.contains('popup'))) {
+                openView(node);
+            }
+        });
+    });
 });
+observer.observe(document.body, { childList: true, subtree: true });
 
-observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
-
-// 3. إدارة زر الرجوع في الهاتف
+// 4. التحكم المتقدم بزر الرجوع
 window.addEventListener('popstate', function (event) {
-    // البحث عن أي نافذة تفاصيل منتج أو سلة مفتوحة
-    const activeModal = document.querySelector('.modal.active, .popup.show, .product-modal.show, [id*="modal"]:not([style*="display: none"])');
-
-    if (activeModal) {
-        // إذا كان هناك منتج أو قسم مفتوح: أغلقه فقط وارجع للرئيسية
-        activeModal.classList.remove('active', 'show');
-        if (activeModal.style) activeModal.style.display = 'none';
-        return;
+    // إذا كان هناك صفحة أو منتج سابق في مصفوفة التنقل
+    if (window.appNavigationStack.length > 0) {
+        // إزالة الشاشة الحالية فقط (آخر منتج تم فتحه)
+        const currentView = window.appNavigationStack.pop();
+        if (currentView) {
+            currentView.classList.remove('active', 'show');
+            if (currentView.style) currentView.style.display = 'none';
+        }
+        return; // العودة للمنتج/الصفحة السابقة بنجاح
     }
 
-    // إذا كان المستخدم في الصفحة الرئيسية بالفعـل
+    // إذا فرغت القائمة وأصبح المستخدم في الصفحة الرئيسية تماماً
     if (!backButtonPressedOnce) {
         backButtonPressedOnce = true;
         
         showToast("اضغط مرة أخرى للخروج من التطبيق");
 
-        // إضافة حالة مؤقتة لمنع الخروج من الضغطة الأولى
-        history.pushState({ page: 'home' }, '', '');
+        // منع الخروج في الضغطة الأولى
+        history.pushState(null, '', '');
 
         setTimeout(function () {
             backButtonPressedOnce = false;
         }, 2000);
     } else {
-        // الخروج عند الضغط مرتين متتاليتين
+        // الخروج عند الضغط مرتين على الرئيسية
         history.back();
     }
 });
