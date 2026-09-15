@@ -1304,6 +1304,35 @@
             if (topBtn) topBtn.style.display = 'none';
             if (banner) banner.style.display = 'none';
         }
+        
+        // كود إدارة زر الرجوع للرجوع خطوة أو إظهار إشعار الخروج
+history.pushState({ page: 'home' }, '', '');
+
+let backButtonPressedOnce = false;
+
+window.addEventListener('popstate', function (event) {
+    const openModal = document.querySelector('.modal.active, .popup.show');
+    if (openModal) {
+        openModal.classList.remove('active', 'show');
+        history.pushState({ page: 'home' }, '', '');
+        return;
+    }
+
+    if (!backButtonPressedOnce) {
+        backButtonPressedOnce = true;
+        
+        showToast("اضغط مرة أخرى للخروج من التطبيق");
+
+        history.pushState({ page: 'home' }, '', '');
+
+        setTimeout(function () {
+            backButtonPressedOnce = false;
+        }, 2000);
+    } else {
+        history.back();
+    }
+});
+
     </script>
 
 </body>
