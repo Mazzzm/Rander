@@ -563,6 +563,21 @@
             color: var(--accent);
             font-weight: bold;
         }
+        .toast-msg {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 14px;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: opacity 0.3s ease;
+}
+
     </style>
 </head>
 
@@ -1182,7 +1197,7 @@
             var phone = document.getElementById('cust-phone').value.trim();
 
             if (!name || !address || !phone) {
-                alert("⚠️ يرجى إكمال جميع بيانات التوصيل!");
+                showToast("⚠️ يرجى إكمال جميع بيانات التوصيل!");
                 return;
             }
 
@@ -1315,7 +1330,21 @@ window.addEventListener('popstate', function (e) {
         history.go(-2); // التراجع خطوتين للعبور من حماية الصفحة الرئيسية والخروج
     }
 });
+function showToast(message) {
+    const existingToast = document.querySelector('.toast-msg');
+    if (existingToast) existingToast.remove();
 
+    const toast = document.createElement('div');
+    toast.className = 'toast-msg';
+    toast.innerText = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 2500);
+}
+        
     </script>
 
 </body>
