@@ -578,6 +578,47 @@
     transition: opacity 0.3s ease;
 }
 
+    /* شريط انقطاع الإنترنت العصري */
+.offline-banner {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    z-index: 10000;
+    transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: inherit;
+    direction: rtl;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.offline-banner.active {
+    bottom: 25px;
+}
+
+.offline-icon-box {
+    background: #ef4444;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.offline-text {
+    font-size: 13px;
+    font-weight: 500;
+}
+    
     </style>
 </head>
 
@@ -1344,6 +1385,27 @@ function showToast(message) {
         setTimeout(() => toast.remove(), 300);
     }, 2500);
 }
+// إنشاء عنصر إشعار انقطاع الاتصال
+const offlineBanner = document.createElement('div');
+offlineBanner.className = 'offline-banner';
+offlineBanner.innerHTML = `
+    <div class="offline-icon-box">📡</div>
+    <div class="offline-text">يبدو أنك غير متصل بالإنترنت! تحقق من الاتصال للمتابعة.</div>
+`;
+document.body.appendChild(offlineBanner);
+
+// مراقبة حالة الاتصال
+function updateOnlineStatus() {
+    if (navigator.onLine) {
+        offlineBanner.classList.remove('active');
+    } else {
+        offlineBanner.classList.add('active');
+    }
+}
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
         
     </script>
 
