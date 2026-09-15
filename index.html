@@ -1305,31 +1305,48 @@
             if (banner) banner.style.display = 'none';
         }
         
-        // كود إدارة زر الرجوع للرجوع خطوة أو إظهار إشعار الخروج
-history.pushState({ page: 'home' }, '', '');
+       // 1. إضافة حالة أصلية للصفحة الرئيسية
+if (!history.state) {
+    history.replaceState({ page: 'home' }, '', '');
+}
 
 let backButtonPressedOnce = false;
 
+// 2. دالة لفتح الصفحات الفرعية أو المنتجات وتسجيلها في سجل التصفح
+function navigateTo(pageName) {
+    history.pushState({ page: pageName }, '', '');
+}
+
+// 3. الاستماع لزر الرجوع في الجوال
 window.addEventListener('popstate', function (event) {
-    const openModal = document.querySelector('.modal.active, .popup.show');
-    if (openModal) {
-        openModal.classList.remove('active', 'show');
-        history.pushState({ page: 'home' }, '', '');
+    // تحقق مما إذا كانت هناك نوافذ منبثقة مفتوحة (مثل تفاصيل المنتج أو السلة)
+    const activeModal = document.querySelector('.modal.active, .popup.show, .product-detail-open');
+    
+    if (activeModal) {
+        // إذا كان هناك منتج/قسم مفتوح، قم بإغلاقه فقط والرجوع خطوة
+        activeModal.classList.remove('active', 'show', 'product-detail-open');
         return;
     }
 
-    if (!backButtonPressedOnce) {
-        backButtonPressedOnce = true;
-        
-        showToast("اضغط مرة أخرى للخروج من التطبيق");
+    // إذا كان المستخدم في الصفحة الرئيسية ومسار التصفح انتهى
+    if (!event.state || event.state.page === 'home') {
+        if (!backButtonPressedOnce) {
+            backButtonPressedOnce = true;
+            
+            // إشعار الخروج
+            showToast("اضغط مرة أخرى للخروج من التطبيق");
 
-        history.pushState({ page: 'home' }, '', '');
+            // منع الخروج في الضغطة الأولى
+            history.pushState({ page: 'home' }, '', '');
 
-        setTimeout(function () {
-            backButtonPressedOnce = false;
-        }, 2000);
-    } else {
-        history.back();
+            // إعادة الضبط بعد ثانيتين
+            setTimeout(function () {
+                backButtonPressedOnce = false;
+            }, 2000);
+        } else {
+            // الضغطة الثانية خلال ثانيتين -> الخروج
+            history.back();
+        }
     }
 });
 
