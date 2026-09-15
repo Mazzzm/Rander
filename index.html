@@ -1305,48 +1305,50 @@
             if (banner) banner.style.display = 'none';
         }
         
-       // 1. إضافة حالة أصلية للصفحة الرئيسية
+       // 1. تثبيت حالة الصفحة الرئيسية
 if (!history.state) {
     history.replaceState({ page: 'home' }, '', '');
 }
 
 let backButtonPressedOnce = false;
 
-// 2. دالة لفتح الصفحات الفرعية أو المنتجات وتسجيلها في سجل التصفح
-function navigateTo(pageName) {
-    history.pushState({ page: pageName }, '', '');
-}
+// 2. مراقبة فتح وإغلاق النوافذ المنبثقة تلقائياً وتسجيلها في السجل
+const observer = new MutationObserver(() => {
+    const activeModal = document.querySelector('.modal.active, .popup.show, .product-modal.show, [id*="modal"]:not([style*="display: none"])');
+    if (activeModal && history.state?.page !== 'modal-open') {
+        history.pushState({ page: 'modal-open' }, '', '');
+    }
+});
 
-// 3. الاستماع لزر الرجوع في الجوال
+observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+
+// 3. إدارة زر الرجوع في الهاتف
 window.addEventListener('popstate', function (event) {
-    // تحقق مما إذا كانت هناك نوافذ منبثقة مفتوحة (مثل تفاصيل المنتج أو السلة)
-    const activeModal = document.querySelector('.modal.active, .popup.show, .product-detail-open');
-    
+    // البحث عن أي نافذة تفاصيل منتج أو سلة مفتوحة
+    const activeModal = document.querySelector('.modal.active, .popup.show, .product-modal.show, [id*="modal"]:not([style*="display: none"])');
+
     if (activeModal) {
-        // إذا كان هناك منتج/قسم مفتوح، قم بإغلاقه فقط والرجوع خطوة
-        activeModal.classList.remove('active', 'show', 'product-detail-open');
+        // إذا كان هناك منتج أو قسم مفتوح: أغلقه فقط وارجع للرئيسية
+        activeModal.classList.remove('active', 'show');
+        if (activeModal.style) activeModal.style.display = 'none';
         return;
     }
 
-    // إذا كان المستخدم في الصفحة الرئيسية ومسار التصفح انتهى
-    if (!event.state || event.state.page === 'home') {
-        if (!backButtonPressedOnce) {
-            backButtonPressedOnce = true;
-            
-            // إشعار الخروج
-            showToast("اضغط مرة أخرى للخروج من التطبيق");
+    // إذا كان المستخدم في الصفحة الرئيسية بالفعـل
+    if (!backButtonPressedOnce) {
+        backButtonPressedOnce = true;
+        
+        showToast("اضغط مرة أخرى للخروج من التطبيق");
 
-            // منع الخروج في الضغطة الأولى
-            history.pushState({ page: 'home' }, '', '');
+        // إضافة حالة مؤقتة لمنع الخروج من الضغطة الأولى
+        history.pushState({ page: 'home' }, '', '');
 
-            // إعادة الضبط بعد ثانيتين
-            setTimeout(function () {
-                backButtonPressedOnce = false;
-            }, 2000);
-        } else {
-            // الضغطة الثانية خلال ثانيتين -> الخروج
-            history.back();
-        }
+        setTimeout(function () {
+            backButtonPressedOnce = false;
+        }, 2000);
+    } else {
+        // الخروج عند الضغط مرتين متتاليتين
+        history.back();
     }
 });
 
