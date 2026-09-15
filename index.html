@@ -1259,9 +1259,12 @@
             if (banner) banner.style.display = 'none';
         }
         
-       // 1. إنشاء قائمة بتتابع الشاشات المفتوحة
+       // 1. إنشاء قائمة بتتابع الشاشات المفتوحة وتأمين الشاشة الرئيسية
 window.navStack = window.navStack || [];
 let exitTimer = null;
+
+// زرع حالة أولية في سجل المتصفح لمنع الخروج المباشر عند فتح التطبيق
+history.pushState({ page: 'main' }, '', '');
 
 // دالة تسجيل الانتقال لشاشة/منتج جديد
 function recordNavigationStep() {
@@ -1292,18 +1295,24 @@ window.addEventListener('popstate', function (e) {
 
     // ب) إذا كان المستخدم في الصفحة الرئيسية تماماً
     if (!exitTimer) {
-        // الضغطة الأولى في الرئيسية: إظهار التنبيه وإعادة تثبيت الصفحة
-        showToast("اضغط مرة أخرى للخروج من التطبيق");
-        history.pushState(null, '', '');
+        // الضغطة الأولى: تثبيت الصفحة مجدداً وإظهار التنبيه
+        history.pushState({ page: 'main' }, '', '');
+        
+        // إشعار مقترح وبسيط
+        if (typeof showToast === 'function') {
+            showToast("اضغط مرة أخرى للخروج من التطبيق");
+        } else {
+            alert("اضغط مرة أخرى للخروج من التطبيق");
+        }
 
-        // إعادة الضبط بعد ثانيتين
+        // مهلة ثانيتين للضغطة الثانية
         exitTimer = setTimeout(() => {
             exitTimer = null;
         }, 2000);
     } else {
-        // الضغطة الثانية خلال ثانيتين: الخروج الفعلي
+        // الضغطة الثانية خلال الثانيتين: الخروج الفعلي
         clearTimeout(exitTimer);
-        history.back();
+        history.go(-2); // التراجع خطوتين للعبور من حماية الصفحة الرئيسية والخروج
     }
 });
 
